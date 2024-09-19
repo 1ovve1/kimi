@@ -1,0 +1,77 @@
+services:
+    nginx:
+        container_name: "${APP_NAME:-kimi}_nginx"
+        build: ./nginx
+        ports:
+            - "${APP_HTTP:-80}:80"
+            - "${APP_HTTPS:-433}:433"
+        networks:
+            - backend
+        links:
+            - fpm
+        volumes:
+            - ./../:/var/www/html
+            - ./nginx/config/nginx.conf:/etc/nginx/nginx.conf:ro
+            - ./nginx/config/sites-available/:/etc/nginx/sites-available/
+            - ./nginx/config/sites-enabled/:/etc/nginx/sites-enabled/
+            - ./nginx/config/nginxconfig.io/:/etc/nginx/nginxconfig.io/
+            - ./nginx/logs/:/var/log/nginx/
+
+    fpm:
+        container_name: "${APP_NAME:-kimi}_fpm"
+        build: ./fpm
+        networks:
+            - backend
+        links:
+            - mysql
+        volumes:
+            - ./../:/var/www/html
+            - ./fpm/config/www.conf:/usr/local/etc/php-fom.d/www.conf
+            - ./fpm/logs/fpm-php.www.log:/var/log/fpm-php.www.log:ro
+
+    mysql:
+        container_name: "${APP_NAME:-kimi}_mysql"
+        build:
+            context: ./mysql
+        restart: always
+        ports:
+            - "${MYSQL_PORT}:3306"
+        networks:
+            - backend
+        environment:
+            MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+            MYSQL_DATABASE: "${MYSQL_DATABASE}"
+            MYSQL_USER: "${MYSQL_USER}"
+            MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+        volumes:
+            - ./mysql/storage/data:/var/lib/mysql/
+
+    php:
+        container_name: "${APP_NAME:-kimi}_php"
+        build: ./php
+        volumes:
+            - ./../:/var/www/html
+
+    php-setup:
+        container_name: "${APP_NAME:-kimi}_php-setup"
+        build: ./php
+        depends_on:
+            - php
+        restart: "no"
+        entrypoint: ["bash", "/root/scripts/setup.sh"]
+        volumes:
+            - ./../:/var/www/html
+
+    adminer:
+        image: adminer
+        restart: always
+        links:
+            - mysql
+        networks:
+            - backend
+        ports:
+            - "${ADMINER_PORT}:8080"
+
+networks:
+    backend:
+        driver: bridge
