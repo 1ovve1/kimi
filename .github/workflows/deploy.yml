@@ -16,7 +16,7 @@ jobs:
 
       - name: Copy Code to Working Directory
         run: |
-          rsync -av --delete ./ ~/www
+          rsync -av ./ ~/www
 
       - name: Stop and Remove Existing Containers
         run: |
