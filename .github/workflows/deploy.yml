@@ -17,13 +17,13 @@ jobs:
       - name: Build and Pull Docker Images
         run: |
           cd docker/
-          docker-compose pull
-          docker-compose build
+          docker compose pull
+          docker compose build
 
       - name: Stop and Remove Existing Containers
         run: |
           cd docker/
-          docker-compose down
+          docker compose down
 
       - name: Copy Code to Working Directory
         run: |
