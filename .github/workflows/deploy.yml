@@ -1,9 +1,11 @@
-name: Deploy to Server
+name: deploy
 
 on:
-  push:
-    branches:
-      - feature/docker
+  workflow_run:
+    workflows: [ "tests" ]
+    branches: [ feature/docker ]
+    types:
+      - completed
 
 
 jobs:

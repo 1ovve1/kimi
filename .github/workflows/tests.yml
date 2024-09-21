@@ -1,8 +1,11 @@
-on: push
-name: Laravel tests
+name: tests
+
+on: workflow_call
+
 jobs:
   phpunit:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+
     container:
       image: kirschbaumdevelopment/laravel-test-runner:8.3
 
