@@ -1,9 +1,9 @@
-name: deploy
+name: Develop tests + deploy
 
 on:
   push:
     branches:
-      - feature/docker
+      - develop
 
 
 jobs:
@@ -46,7 +46,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Copy Code to Working Directory
         run: |
