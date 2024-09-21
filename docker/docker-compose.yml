@@ -34,8 +34,6 @@ services:
         build:
             context: ./mysql
         restart: always
-        ports:
-            - "${MYSQL_PORT}:3306"
         networks:
             - backend
         environment:
