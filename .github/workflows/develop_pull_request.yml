@@ -1,10 +1,9 @@
-name: Develop tests + deploy
+name: Develop tests
 
 on:
   pull_request:
     branches:
       - develop
-
 
 jobs:
   laravel-tests:
@@ -39,25 +38,3 @@ jobs:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
         run: php artisan test
-
-  deploy:
-    needs: laravel-tests
-    runs-on: self-hosted
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Copy Code to Working Directory
-        run: |
-          rsync -av ./ ~/www
-
-      - name: Stop and Remove Existing Containers
-        run: |
-          cd ~/www/docker
-          docker compose down
-
-      - name: Start Docker Containers
-        run: |
-          cd ~/www/docker
-          bash run.sh
