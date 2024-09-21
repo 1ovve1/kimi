@@ -6,6 +6,9 @@ on:
     branches: [ "feature/docker" ]
     types:
       - completed
+  push:
+    branches:
+      - feature/docker
 
 
 jobs:
