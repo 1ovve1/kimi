@@ -2,9 +2,8 @@ name: Develop tests + deploy
 
 on:
   pull_request:
-    branches:
-      - develop
-  push:
+    types:
+      - opened
     branches:
       - develop
 
