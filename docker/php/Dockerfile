@@ -9,4 +9,4 @@ RUN docker-php-ext-enable xdebug
 
 RUN mkdir /root/scripts
 COPY ./scripts /root/scripts
-RUN bash /root/scripts/install.sh -d "${APP_XDEBUG}"
+RUN bash /root/scripts/install.sh -d "${FPM_XDEBUG}"

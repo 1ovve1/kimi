@@ -1,23 +1,21 @@
 #!/bin/bash
 
-WORKDIR=.
+source .env
 
-# init data files for mounting
-DATA_FILES=()
+DIRS=("${STORAGE_NGINX}" "${STORAGE_FPM}" "${STORAGE_MYSQL}")
 
-for index in ${!DATA_FILES[*]}
+for index in ${!DIRS[*]}
 do
-    subject="${WORKDIR}/data/${DATA_FILES[$index]}"
-    touch "$subject" && chmod 644 "$subject"
+    mkdir -p "${DIRS[index]}"
 done
 
 # init logs files for mounting
-LOG_FILES=(fpm/logs/fpm-php.www.log nginx/logs/access.log nginx/logs/error.log)
+LOG_FILES=("${STORAGE_FPM}/logs/fpm-php.www.log" "${STORAGE_NGINX}/logs/access.log" "${STORAGE_NGINX}/logs/error.log")
 
 for index in ${!LOG_FILES[*]}
 do
-  subject="${WORKDIR}/${LOG_FILES[$index]}"
-  touch "$subject" && chmod 666 "$subject"
+  subject="${LOG_FILES[$index]}"
+  mkdir -p "$(dirname "${subject}")" && touch "$subject" && chmod 666 "$subject"
 done
 
-docker compose --env-file="$WORKDIR"/.env --env-file="$WORKDIR"/../.env -f "$WORKDIR"/docker-compose.yml up --build -d
+docker compose --env-file=.env --env-file="${STORAGE_APP}/.env" -f ./docker-compose.yml up --build -d
