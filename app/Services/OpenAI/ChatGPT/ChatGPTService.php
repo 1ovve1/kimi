@@ -27,7 +27,7 @@ class ChatGPTService extends AbstractService implements ChatGPTServiceInterface
         $response = $this->client->chat()->create([
             'model' => $this->memoryService->tokenizerService->getModel()->value,
             'messages' => [
-                new GPTDialogMessageData($chatMessageData->text, 'bot')
+                new GPTDialogMessageData($chatMessageData->text, 'assistant')
             ],
         ]);
 

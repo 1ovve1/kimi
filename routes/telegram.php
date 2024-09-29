@@ -19,10 +19,9 @@ use SergiX44\Nutgram\Nutgram;
 |
 */
 
-$bot->onText('(.*)(kimi|KIMI|Kimi|Кими|кими|КИМИ)!(.*)', AskKimiAction::class);
-
 $bot->registerCommand(StartTelegramCommand::class);
 
 $bot->group(function (Nutgram $bot) {
+    $bot->onText('(.*)(kimi|KIMI|Kimi|Кими|кими|КИМИ)!(.*)', AskKimiAction::class);
     $bot->registerCommand(AskTelegramCommand::class);
 })->middleware(StoreTelegramRequestInDatabaseMiddleware::class);

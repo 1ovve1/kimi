@@ -17,6 +17,7 @@ class AskKimiAction extends AbstractTelegramAction
 
     public function __construct()
     {
+        $this->chatGPTService = app(ChatGPTServiceInterface::class);
     }
 
     /**
