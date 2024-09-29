@@ -2,6 +2,7 @@
 
 return [
     'default' => env('GPT_MODEL', 'gpt-4o'),
+    'key' => env('GPT_KEY', ''),
 
     /** @link \App\Services\OpenAI\AIModelsEnum */
     'models' => [

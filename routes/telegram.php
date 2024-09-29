@@ -2,6 +2,7 @@
 
 /** @var SergiX44\Nutgram\Nutgram $bot */
 
+use App\Telegram\Actions\OpenAI\ChatGPT\AskKimiAction;
 use App\Telegram\Actions\TestAction;
 use App\Telegram\Commands\ChatGPT\AskTelegramCommand;
 use App\Telegram\Commands\StartTelegramCommand;
@@ -18,7 +19,7 @@ use SergiX44\Nutgram\Nutgram;
 |
 */
 
-$bot->onText('(kimi|KIMI|Kimi|Кими|кими|КИМИ) {data}', TestAction::class);
+$bot->onText('(.*)(kimi|KIMI|Kimi|Кими|кими|КИМИ)!(.*)', AskKimiAction::class);
 
 $bot->registerCommand(StartTelegramCommand::class);
 

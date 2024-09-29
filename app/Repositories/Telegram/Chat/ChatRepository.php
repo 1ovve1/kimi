@@ -5,14 +5,17 @@ declare(strict_types=1);
 namespace App\Repositories\Telegram\Chat;
 
 use App\Data\Telegram\Chat\ChatData;
+use App\Data\Telegram\Chat\ChatMessageData;
 use App\Data\Telegram\Chat\Types\ChannelData;
 use App\Data\Telegram\Chat\Types\GroupData;
 use App\Data\Telegram\Chat\Types\PrivateData;
 use App\Data\Telegram\Chat\Types\SupergroupData;
 use App\Data\Telegram\UserData;
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
+use App\Exceptions\Repositories\Telegram\ChatMessageNotFoundException;
 use App\Models\Channel;
 use App\Models\Chat;
+use App\Models\ChatMessage;
 use App\Models\ChatUser;
 use App\Models\Group;
 use App\Models\Supergroup;
