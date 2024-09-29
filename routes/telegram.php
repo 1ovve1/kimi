@@ -1,6 +1,11 @@
 <?php
+
 /** @var SergiX44\Nutgram\Nutgram $bot */
 
+use App\Telegram\Actions\TestAction;
+use App\Telegram\Commands\ChatGPT\AskTelegramCommand;
+use App\Telegram\Commands\StartTelegramCommand;
+use App\Telegram\Middlewares\StoreTelegramRequestInDatabaseMiddleware;
 use SergiX44\Nutgram\Nutgram;
 
 /*
@@ -13,6 +18,10 @@ use SergiX44\Nutgram\Nutgram;
 |
 */
 
-$bot->onCommand('start', function (Nutgram $bot) {
-    $bot->sendMessage('Hello, world!');
-})->description('The start command!');
+$bot->onText('(kimi|KIMI|Kimi|Кими|кими|КИМИ) {data}', TestAction::class);
+
+$bot->registerCommand(StartTelegramCommand::class);
+
+$bot->group(function (Nutgram $bot) {
+    $bot->registerCommand(AskTelegramCommand::class);
+})->middleware(StoreTelegramRequestInDatabaseMiddleware::class);
