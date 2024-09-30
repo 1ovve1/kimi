@@ -13,7 +13,7 @@ use App\Telegram\Abstract\Actions\AbstractTelegramAction;
 
 class AskKimiAction extends AbstractTelegramAction
 {
-    readonly ChatGPTServiceInterface $chatGPTService;
+    public readonly ChatGPTServiceInterface $chatGPTService;
 
     public function __construct()
     {
@@ -27,8 +27,13 @@ class AskKimiAction extends AbstractTelegramAction
     public function handle(TelegramServiceInterface $telegramService, TelegramDataRepositoryInterface $telegramDataRepository): void
     {
         $message = $telegramDataRepository->getMessage();
+        $chat = $telegramDataRepository->getChat();
 
-        $answer = $this->chatGPTService->answer($message);
+        if ($chat->interactive_mode === false) {
+            return;
+        }
+
+        $answer = $this->chatGPTService->answerWithMemory($chat);
 
         $telegramService->replyToMessageAndSave($answer->content, $message);
     }

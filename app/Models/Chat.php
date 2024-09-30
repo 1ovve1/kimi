@@ -17,6 +17,7 @@ class Chat extends Model
         'id',
         'target_type',
         'target_id',
+        'interactive_mode',
     ];
 
     public $incrementing = false;

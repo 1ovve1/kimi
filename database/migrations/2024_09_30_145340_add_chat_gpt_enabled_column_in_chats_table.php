@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('chat_gpt_memories', function (Blueprint $table) {
-            $table->id();
-
-            $table->bigInteger('chat_message_id')->index();
-
-            $table->foreign('chat_message_id')->references('id')->on('chat_messages')->cascadeOnDelete();
+        Schema::table('chats', function (Blueprint $table) {
+            $table->boolean('interactive_mode')->default(false);
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('chat_gpt_memories');
+        Schema::table('chats', function (Blueprint $table) {
+            $table->dropColumn('interactive_mode');
+        });
     }
 };

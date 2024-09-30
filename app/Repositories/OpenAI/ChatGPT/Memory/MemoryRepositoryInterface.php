@@ -16,4 +16,6 @@ interface MemoryRepositoryInterface extends RepositoryInterface
      * @return Collection<GPTDialogMessageData>
      */
     public function getAllLatest(ChatData $chatData): Collection;
+
+    public function memorize(ChatMessageData $chatMessageData): ChatMessageData;
 }

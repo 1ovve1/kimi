@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Repositories\Telegram\Chat;
 
 use App\Data\Telegram\Chat\ChatData;
-use App\Data\Telegram\Chat\ChatMessageData;
 use App\Data\Telegram\Chat\Types\ChannelData;
 use App\Data\Telegram\Chat\Types\GroupData;
 use App\Data\Telegram\Chat\Types\PrivateData;
@@ -32,4 +31,9 @@ interface ChatRepositoryInterface extends RepositoryInterface
      * @throws ChatNotFoundException
      */
     public function appendUser(ChatData $chatData, UserData $userData): UserData;
+
+    /**
+     * @throws ChatNotFoundException
+     */
+    public function setInteractiveMode(ChatData $chatData, bool $interactiveMode): ChatData;
 }

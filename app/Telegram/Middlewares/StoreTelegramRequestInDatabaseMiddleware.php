@@ -5,6 +5,7 @@ namespace App\Telegram\Middlewares;
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Exceptions\Repositories\Telegram\ChatMessageAlreadyExistsException;
 use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
+use App\Repositories\OpenAI\ChatGPT\Memory\MemoryRepositoryInterface;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
 use App\Repositories\Telegram\ChatMessage\ChatMessageRepositoryInterface;
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
@@ -20,11 +21,14 @@ class StoreTelegramRequestInDatabaseMiddleware extends AbstractTelegramMiddlewar
 
     private readonly ChatMessageRepositoryInterface $chatMessageRepository;
 
+    private readonly MemoryRepositoryInterface $memoryRepository;
+
     public function __construct()
     {
         $this->userRepository = app(UserRepositoryInterface::class);
         $this->chatRepository = app(ChatRepositoryInterface::class);
         $this->chatMessageRepository = app(ChatMessageRepositoryInterface::class);
+        $this->memoryRepository = app(MemoryRepositoryInterface::class);
     }
 
     /**
@@ -48,7 +52,11 @@ class StoreTelegramRequestInDatabaseMiddleware extends AbstractTelegramMiddlewar
                 $telegramDataRepository->getUser()
             );
             $this->chatRepository->appendUser($chat, $user);
-            $this->chatMessageRepository->save($chat, $user, $telegramDataRepository->getMessage());
+
+            if ($chat->interactive_mode) {
+                $this->chatMessageRepository->save($chat, $user, $telegramDataRepository->getMessage());
+                $this->memoryRepository->memorize($telegramDataRepository->getMessage());
+            }
         } catch (TelegramUserNotFoundException|ChatMessageAlreadyExistsException) {
         }
     }

@@ -4,9 +4,6 @@ namespace App\Exceptions\Repositories\Telegram;
 
 use App\Data\Telegram\Chat\ChatMessageData;
 use App\Exceptions\CheckedException;
-use App\Models\ChatMessage;
-use Exception;
-use Throwable;
 
 class ChatMessageNotFoundException extends CheckedException
 {

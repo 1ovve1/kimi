@@ -13,5 +13,5 @@ interface MemoryServiceInterface
     /**
      * @return Collection<GPTDialogMessageData>
      */
-    function collectMessagesForBoilerplate(ChatData $chatData): Collection;
+    public function collectMessagesForBoilerplate(ChatData $chatData): Collection;
 }

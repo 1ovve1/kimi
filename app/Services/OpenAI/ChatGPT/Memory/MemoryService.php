@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Services\OpenAI\ChatGPT\Memory;
 
 use App\Data\Telegram\Chat\ChatData;
-use App\Data\Telegram\Chat\ChatMessageData;
 use App\Exceptions\Services\OpenAI\Tokenizer\TokensLimitException;
 use App\Repositories\OpenAI\ChatGPT\Memory\MemoryRepositoryInterface;
 use App\Services\Abstract\AbstractService;
@@ -19,9 +18,9 @@ class MemoryService extends AbstractService implements MemoryServiceInterface
         readonly MemoryRepositoryInterface $memoryRepository
     ) {}
 
-    function collectMessagesForBoilerplate(ChatData $chatData): Collection
+    public function collectMessagesForBoilerplate(ChatData $chatData): Collection
     {
-        $collection = new Collection();
+        $collection = new Collection;
         $messages = $this->memoryRepository->getAllLatest($chatData);
 
         try {

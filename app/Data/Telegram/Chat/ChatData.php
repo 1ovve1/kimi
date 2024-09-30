@@ -20,7 +20,8 @@ class ChatData extends Data
 
     public function __construct(
         readonly int $id,
-        mixed $target
+        mixed $target,
+        readonly bool $interactive_mode = false,
     ) {
         if ($target instanceof User) {
             $this->target = PrivateData::from($target);
