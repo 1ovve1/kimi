@@ -107,4 +107,11 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
 
         return ChatData::from($chat);
     }
+
+    public function find(ChatData $chatData): ChatData
+    {
+        $chat = Chat::find($chatData->id) ?? throw new ChatNotFoundException($chatData);
+
+        return ChatData::from($chat);
+    }
 }

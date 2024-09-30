@@ -22,7 +22,7 @@ class InteractiveCommand extends AbstractTelegramCommand
     public function onHandle(TelegramServiceInterface $telegramService, TelegramDataRepositoryInterface $telegramDataRepository): void
     {
         $chatRepository = $this->getChatRepository();
-        $chat = $telegramDataRepository->getChat();
+        $chat = $chatRepository->find($telegramDataRepository->getChat());
 
         if ($chat->interactive_mode) {
             $chatRepository->setInteractiveMode($chat, false);

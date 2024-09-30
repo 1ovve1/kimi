@@ -36,4 +36,11 @@ interface ChatRepositoryInterface extends RepositoryInterface
      * @throws ChatNotFoundException
      */
     public function setInteractiveMode(ChatData $chatData, bool $interactiveMode): ChatData;
+
+    /**
+     * Find chat in db
+     *
+     * @throws ChatNotFoundException
+     */
+    public function find(ChatData $chatData): ChatData;
 }
