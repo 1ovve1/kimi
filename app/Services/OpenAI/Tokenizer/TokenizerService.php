@@ -7,6 +7,7 @@ namespace App\Services\OpenAI\Tokenizer;
 use App\Exceptions\Services\OpenAI\Tokenizer\TokensLimitException;
 use App\Services\Abstract\AbstractService;
 use App\Services\OpenAI\AIModelsEnum;
+use Illuminate\Support\Collection;
 use Rajentrivedi\TokenizerX\TokenizerX;
 
 class TokenizerService extends AbstractService implements TokenizerServiceInterface
@@ -15,8 +16,12 @@ class TokenizerService extends AbstractService implements TokenizerServiceInterf
         readonly AIModelsEnum $GPTModelsEnum,
     ) {}
 
-    public function count(string|array $prompt): int
+    public function count(string|array|Collection $prompt): int
     {
+        if ($prompt instanceof Collection) {
+            $prompt = $prompt->toArray();
+        }
+
         if (is_array($prompt)) {
             $prompt = implode(PHP_EOL, $prompt);
         }
@@ -24,7 +29,7 @@ class TokenizerService extends AbstractService implements TokenizerServiceInterf
         return TokenizerX::count($prompt, $this->GPTModelsEnum->value);
     }
 
-    public function tryCount(string|array $prompt): int
+    public function tryCount(string|array|Collection $prompt): int
     {
         $tokensCountLimit = $this->GPTModelsEnum->details()['limit'];
         $tokensCount = $this->count($prompt);

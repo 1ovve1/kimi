@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -20,26 +21,31 @@ class ChatUser extends Model
     ];
 
     /**
-     * @return HasOne<User>
+     * @return BelongsTo<User>
      */
-    public function user(): HasOne
+    public function user(): BelongsTo
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
     }
 
     /**
-     * @return HasOne<Chat>
+     * @return BelongsTo<Chat>
      */
-    public function chat(): HasOne
+    public function chat(): BelongsTo
     {
-        return $this->hasOne(Chat::class);
+        return $this->belongsTo(Chat::class);
     }
 
     /**
      * @return HasMany<ChatMessage>
      */
-    public function messages(): HasMany
+    public function chat_messages(): HasMany
     {
         return $this->hasMany(ChatMessage::class);
+    }
+
+    public function fullName(): string
+    {
+        return $this->first_name . $this->lats_name;
     }
 }

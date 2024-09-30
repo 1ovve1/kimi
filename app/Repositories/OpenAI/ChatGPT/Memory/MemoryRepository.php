@@ -26,31 +26,27 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
         /** @var Chat $chat */
         $chat = Chat::find($chatData->id) ?? throw new ChatNotFoundException($chatData);
 
-        $botMessages = $chat->whereHas('chat_users', function (Builder $builder) {
-            $builder->whereHas('chat_messages', function (Builder $builder) {
-                $builder->has('chat_gpt_memory');
-            })->whereHas('user', function (Builder $builder) {
+        $botMessages = ChatMessage::whereHas('chat_user', function (Builder $builder) use ($chat) {
+            $builder->where('chat_id', $chat->id)->whereHas('user', function (Builder $builder) {
                 $builder->where('is_bot', true);
             });
-        })->latest()->get();
+        })->whereHas('chat_gpt_memory')->latest()->with('chat_user.user')->get();
 
-        $userMessages = $chat->whereHas('chat_users', function (Builder $builder) {
-            $builder->whereHas('chat_messages', function (Builder $builder) {
-                $builder->has('chat_gpt_memory');
-            })->whereHas('user', function (Builder $builder) {
+        $userMessages = ChatMessage::whereHas('chat_user', function (Builder $builder) use ($chat) {
+            $builder->where('chat_id', $chat->id)->whereHas('user', function (Builder $builder) {
                 $builder->where('is_bot', false);
             });
-        })->latest()->get();
+        })->whereHas('chat_gpt_memory')->latest()->with('chat_user.user')->get();
 
         $botMessages->map(function (ChatMessage $message) {
-            $message->content = $message->text;
+            $message->content = "{$message->chat_user->user->fullName()}: {$message->text}";
             $message->role = 'assistant';
 
             return $message;
         });
 
         $userMessages->map(function (ChatMessage $message) {
-            $message->content = $message->text;
+            $message->content = $message-> $message->text;
             $message->role = 'user';
 
             return $message;

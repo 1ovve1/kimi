@@ -35,6 +35,6 @@ enum AIModelsEnum: string
     {
         $model = $this->value;
 
-        return config('gpt.models')[$model] ?? throw new GPTModelNotFoundedException($this->value);
+        return collect(config('gpt.models')[$model] ?? throw new GPTModelNotFoundedException($this->value));
     }
 }

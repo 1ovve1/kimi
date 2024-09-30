@@ -25,15 +25,14 @@ class MemoryService extends AbstractService implements MemoryServiceInterface
 
         try {
             foreach ($messages as $message) {
-                $collection->unshift($message);
+                $collection->pop($message);
 
                 $this->tokenizerService->tryCount($collection->pluck('content'));
             }
         } catch (TokensLimitException $e) {
-            $collection->shift();
+            $collection->push();
         }
 
         return $collection;
-
     }
 }

@@ -51,7 +51,7 @@ class ChatMessageRepository extends AbstractRepository implements ChatMessageRep
         /** @var ChatUser $chatUser */
         $chatUser = $chat->chat_users()->where('user_id', $user->id)->first() ?? throw new UserNotFoundInGivenChatException($chatData, $userData);
 
-        $chatMessage = $chatUser->messages()->save(new ChatMessage($chatMessageData->toArray()));
+        $chatMessage = $chatUser->chat_messages()->save(new ChatMessage($chatMessageData->toArray()));
 
         return ChatMessageData::from($chatMessage);
     }
