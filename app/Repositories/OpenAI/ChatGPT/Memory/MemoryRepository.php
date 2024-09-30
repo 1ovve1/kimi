@@ -39,14 +39,20 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
         })->whereHas('chat_gpt_memory')->latest()->with('chat_user.user')->get();
 
         $botMessages->map(function (ChatMessage $message) {
-            $message->content = "{$message->chat_user->user->fullName()}: {$message->text}";
+            $user = $message->chat_user->user;
+            $fullNane = trim("{$user->first_name} {$user->last_name}");
+
+            $message->content = "{$fullNane}: {$message->text}";
             $message->role = 'assistant';
 
             return $message;
         });
 
         $userMessages->map(function (ChatMessage $message) {
-            $message->content = "{$message->chat_user->user->fullName()}: {$message->text}";
+            $user = $message->chat_user->user;
+            $fullNane = trim("{$user->first_name} {$user->last_name}");
+
+            $message->content = "{$fullNane}: {$message->text}";
             $message->role = 'user';
 
             return $message;
