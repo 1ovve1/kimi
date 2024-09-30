@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 enum AIModelsEnum: string
 {
     case GPT_4o = 'gpt-4o';
-    case GPT_4o_MINI = 'gpt-4o-MINI';
+    case GPT_4o_MINI = 'gpt-4o-mini';
     case GPT_4 = 'gpt-4';
     case GPT_3_5_TURBO = 'gpt-3.5-turbo';
 

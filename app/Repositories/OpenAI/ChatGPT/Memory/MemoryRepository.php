@@ -46,7 +46,7 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
         });
 
         $userMessages->map(function (ChatMessage $message) {
-            $message->content = $message-> $message->text;
+            $message->content = "{$message->chat_user->user->fullName()}: {$message->text}";
             $message->role = 'user';
 
             return $message;
