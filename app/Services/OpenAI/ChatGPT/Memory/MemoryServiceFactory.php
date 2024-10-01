@@ -11,6 +11,6 @@ class MemoryServiceFactory implements ServiceFactoryInterface
 {
     public function get(): MemoryServiceInterface
     {
-        return App::make(MemoryService::class);
+        return App::make(CachedMemoryService::class);
     }
 }

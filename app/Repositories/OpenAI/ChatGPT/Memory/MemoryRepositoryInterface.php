@@ -17,5 +17,5 @@ interface MemoryRepositoryInterface extends RepositoryInterface
      */
     public function getAllLatest(ChatData $chatData): Collection;
 
-    public function memorize(ChatMessageData $chatMessageData): ChatMessageData;
+    public function memorize(ChatMessageData $chatMessageData, int $tokens_count): ChatMessageData;
 }

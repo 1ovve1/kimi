@@ -5,11 +5,11 @@ namespace App\Telegram\Middlewares;
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Exceptions\Repositories\Telegram\ChatMessageAlreadyExistsException;
 use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
-use App\Repositories\OpenAI\ChatGPT\Memory\MemoryRepositoryInterface;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
 use App\Repositories\Telegram\ChatMessage\ChatMessageRepositoryInterface;
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
 use App\Repositories\Telegram\User\UserRepositoryInterface;
+use App\Services\OpenAI\ChatGPT\Memory\MemoryServiceInterface;
 use App\Services\Telegram\TelegramServiceInterface;
 use App\Telegram\Abstract\Middlewares\AbstractTelegramMiddleware;
 
@@ -21,14 +21,14 @@ class StoreTelegramRequestInDatabaseMiddleware extends AbstractTelegramMiddlewar
 
     private readonly ChatMessageRepositoryInterface $chatMessageRepository;
 
-    private readonly MemoryRepositoryInterface $memoryRepository;
+    private readonly MemoryServiceInterface $memoryService;
 
     public function __construct()
     {
         $this->userRepository = app(UserRepositoryInterface::class);
         $this->chatRepository = app(ChatRepositoryInterface::class);
         $this->chatMessageRepository = app(ChatMessageRepositoryInterface::class);
-        $this->memoryRepository = app(MemoryRepositoryInterface::class);
+        $this->memoryService = app(MemoryServiceInterface::class);
     }
 
     /**
@@ -55,7 +55,7 @@ class StoreTelegramRequestInDatabaseMiddleware extends AbstractTelegramMiddlewar
 
             if ($chat->interactive_mode) {
                 $this->chatMessageRepository->save($chat, $user, $telegramDataRepository->getMessage());
-                $this->memoryRepository->memorize($telegramDataRepository->getMessage());
+                $this->memoryService->memorize($telegramDataRepository->getMessage());
             }
         } catch (TelegramUserNotFoundException|ChatMessageAlreadyExistsException) {
         }

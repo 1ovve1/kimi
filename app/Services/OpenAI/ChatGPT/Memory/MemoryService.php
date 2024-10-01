@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\OpenAI\ChatGPT\Memory;
 
 use App\Data\Telegram\Chat\ChatData;
+use App\Data\Telegram\Chat\ChatMessageData;
 use App\Exceptions\Services\OpenAI\Tokenizer\TokensLimitException;
 use App\Repositories\OpenAI\ChatGPT\Memory\MemoryRepositoryInterface;
 use App\Services\Abstract\AbstractService;
@@ -34,5 +35,10 @@ class MemoryService extends AbstractService implements MemoryServiceInterface
         }
 
         return $collection;
+    }
+
+    public function memorize(ChatMessageData $chatData): ChatMessageData
+    {
+        return $this->memoryRepository->memorize($chatData, $this->tokenizerService->count($chatData->text));
     }
 }
