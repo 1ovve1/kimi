@@ -19,9 +19,7 @@ class GlobalMessageHandlerAction extends AbstractTelegramAction
     public function __construct(
         readonly ChatGPTServiceInterface $chatGPTService,
         readonly ChatRepositoryInterface $chatRepository
-    )
-    {
-    }
+    ) {}
 
     /**
      * @throws ChatNotFoundException

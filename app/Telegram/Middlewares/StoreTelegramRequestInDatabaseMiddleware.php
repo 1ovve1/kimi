@@ -5,7 +5,6 @@ namespace App\Telegram\Middlewares;
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Exceptions\Repositories\Telegram\ChatMessageAlreadyExistsException;
 use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
-use App\Repositories\OpenAI\ChatGPT\Memory\MemoryRepositoryInterface;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
 use App\Repositories\Telegram\ChatMessage\ChatMessageRepositoryInterface;
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;

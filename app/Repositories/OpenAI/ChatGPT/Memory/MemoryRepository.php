@@ -44,7 +44,7 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
 
             $message->content = "{$fullNane}: {$message->text}";
             $message->role = 'assistant';
-            $message->tokens =  $message->chat_gpt_memory->tokens_count;
+            $message->tokens = $message->chat_gpt_memory->tokens_count;
 
             return $message;
         });
@@ -55,7 +55,7 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
 
             $message->content = "{$fullNane}: {$message->text}";
             $message->role = 'user';
-            $message->tokens =  $message->chat_gpt_memory->tokens_count;
+            $message->tokens = $message->chat_gpt_memory->tokens_count;
 
             return $message;
         });

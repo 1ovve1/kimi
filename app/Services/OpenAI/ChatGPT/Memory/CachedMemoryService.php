@@ -6,8 +6,6 @@ namespace App\Services\OpenAI\ChatGPT\Memory;
 
 use App\Data\OpenAI\ChatGPT\GPTDialogMessageData;
 use App\Data\Telegram\Chat\ChatData;
-use App\Exceptions\Services\OpenAI\Tokenizer\TokensLimitException;
-use App\Services\Abstract\AbstractService;
 use Illuminate\Support\Collection;
 
 class CachedMemoryService extends MemoryService implements MemoryServiceInterface

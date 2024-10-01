@@ -11,6 +11,7 @@ class ChatGPTMemory extends Model
     use HasFactory;
 
     protected $table = 'chat_gpt_memories';
+
     public $timestamps = false;
 
     protected $fillable = [

@@ -7,7 +7,6 @@ namespace App\Repositories\Telegram\TelegramData;
 use App\Data\Telegram\Chat\ChatData;
 use App\Data\Telegram\Chat\ChatMessageData;
 use App\Data\Telegram\UserData;
-use App\Exceptions\Repositories\Telegram\ChatMessageNotFoundException;
 use App\Exceptions\Repositories\Telegram\TelegramData\ReplyWasNotFoundedException;
 use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
 use App\Repositories\Abstract\RepositoryInterface;

@@ -11,7 +11,6 @@ use App\Data\Telegram\Chat\Types\GroupData;
 use App\Data\Telegram\Chat\Types\PrivateData;
 use App\Data\Telegram\Chat\Types\SupergroupData;
 use App\Data\Telegram\UserData;
-use App\Exceptions\Repositories\Telegram\ChatMessageNotFoundException;
 use App\Exceptions\Repositories\Telegram\TelegramData\ReplyWasNotFoundedException;
 use App\Repositories\Abstract\AbstractRepository;
 use SergiX44\Nutgram\Nutgram;
@@ -30,10 +29,9 @@ class NutgramTelegramDataRepository extends AbstractRepository implements Telegr
         return ChatMessageData::fromNutgramMessage($message);
     }
 
-
     public function getReplyMessage(): ChatMessageData
     {
-        $message = $this->nutgram->message()->reply_to_message ?? throw new ReplyWasNotFoundedException();
+        $message = $this->nutgram->message()->reply_to_message ?? throw new ReplyWasNotFoundedException;
 
         return ChatMessageData::fromNutgramMessage($message);
     }
@@ -64,6 +62,7 @@ class NutgramTelegramDataRepository extends AbstractRepository implements Telegr
             $user->toArray()
         );
     }
+
     public function getMe(): UserData
     {
         $user = $this->nutgram->getMe();
