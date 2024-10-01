@@ -15,6 +15,7 @@ class ChatGPTMemory extends Model
 
     protected $fillable = [
         'chat_message_id',
+        'tokens_count',
     ];
 
     /**

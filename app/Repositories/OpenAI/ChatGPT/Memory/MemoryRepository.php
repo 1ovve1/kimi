@@ -30,13 +30,13 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
             $builder->where('chat_id', $chat->id)->whereHas('user', function (Builder $builder) {
                 $builder->where('is_bot', true);
             });
-        })->whereHas('chat_gpt_memory')->latest()->with('chat_user.user')->get();
+        })->whereHas('chat_gpt_memory')->latest()->with('chat_user.user', 'chat_gpt_memory')->get();
 
         $userMessages = ChatMessage::whereHas('chat_user', function (Builder $builder) use ($chat) {
             $builder->where('chat_id', $chat->id)->whereHas('user', function (Builder $builder) {
                 $builder->where('is_bot', false);
             });
-        })->whereHas('chat_gpt_memory')->latest()->with('chat_user.user')->get();
+        })->whereHas('chat_gpt_memory')->latest()->with('chat_user.user', 'chat_gpt_memory')->get();
 
         $botMessages->map(function (ChatMessage $message) {
             $user = $message->chat_user->user;
@@ -44,6 +44,7 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
 
             $message->content = "{$fullNane}: {$message->text}";
             $message->role = 'assistant';
+            $message->tokens =  $message->chat_gpt_memory->tokens_count;
 
             return $message;
         });
@@ -54,6 +55,7 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
 
             $message->content = "{$fullNane}: {$message->text}";
             $message->role = 'user';
+            $message->tokens =  $message->chat_gpt_memory->tokens_count;
 
             return $message;
         });
@@ -63,12 +65,12 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
         return new Collection(GPTDialogMessageData::collect($collection));
     }
 
-    public function memorize(ChatMessageData $chatMessageData): ChatMessageData
+    public function memorize(ChatMessageData $chatMessageData, int $tokens_count): ChatMessageData
     {
         /** @var ChatMessage $chatMessage */
         $chatMessage = ChatMessage::find($chatMessageData->id) ?? throw new ChatMessageNotFoundException($chatMessageData);
 
-        $chatMessage->chat_gpt_memory()->save(new ChatGPTMemory);
+        $chatMessage->chat_gpt_memory()->save(new ChatGPTMemory(['tokens_count' => $tokens_count]));
 
         return $chatMessageData;
     }

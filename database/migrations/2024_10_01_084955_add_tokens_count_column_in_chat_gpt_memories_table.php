@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('chats', function (Blueprint $table) {
-            $table->boolean('interactive_mode')->after('target_id')->default(false);
+        Schema::table('chat_gpt_memories', function (Blueprint $table) {
+            $table->integer('tokes_count')->after('id');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('chats', function (Blueprint $table) {
-            $table->dropColumn('interactive_mode');
+        Schema::table('chat_gpt_memories', function (Blueprint $table) {
+            $table->dropColumn('tokens_count');
         });
     }
 };

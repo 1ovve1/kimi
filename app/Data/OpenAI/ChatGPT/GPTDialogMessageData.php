@@ -9,5 +9,6 @@ class GPTDialogMessageData extends Data
     public function __construct(
         readonly string $content,
         readonly string $role,
+        readonly ?int $tokens_count = null
     ) {}
 }
