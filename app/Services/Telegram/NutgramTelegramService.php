@@ -12,6 +12,8 @@ use App\Repositories\Telegram\ChatMessage\ChatMessageRepositoryInterface;
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryFactory;
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
 use App\Services\Abstract\AbstractService;
+use Illuminate\Support\Str;
+use Illuminate\Support\Stringable;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Properties\ParseMode;
 
@@ -34,6 +36,10 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
     {
         if ($chatMessageData === null) {
             $chatMessageData = $this->telegramDataRepository->getMessage();
+        }
+
+        if (self::PARSE_MODE === ParseMode::MARKDOWN) {
+            $content = $this->escapeCharactersForMarkdown($content);
         }
 
         $message = $this->nutgram
@@ -63,6 +69,10 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
             $chatData = $this->telegramDataRepository->getChat();
         }
 
+        if (self::PARSE_MODE === ParseMode::MARKDOWN) {
+            $content = $this->escapeCharactersForMarkdown($content);
+        }
+
         $message = $this->nutgram
             ->sendMessage($content, chat_id: $chatData->target->id, parse_mode: self::PARSE_MODE);
 
@@ -82,5 +92,17 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
             $this->telegramDataRepository->getUser(),
             $chatMessage
         );
+    }
+
+    /**
+     * escape '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!' chars
+     */
+    protected function escapeCharactersForMarkdown(string $text): string
+    {
+        return (new Stringable($text))
+            ->replace(
+                ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'],
+                ['\_', '\*', '\[', '\]', '\(', '\)', '\~', '\`', '\>', '\#', '\+', '\-', '\=', '\|', '\{', '\}', '\.', '\!']
+            )->value();
     }
 }

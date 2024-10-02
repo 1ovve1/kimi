@@ -31,6 +31,8 @@ class ChatData extends Data
             $this->target = SupergroupData::from($target);
         } elseif ($target instanceof Channel) {
             $this->target = ChannelData::from($target);
+        } else {
+            $this->target = $target;
         }
     }
 }
