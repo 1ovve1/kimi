@@ -10,15 +10,17 @@ use App\Exceptions\Repositories\Telegram\TelegramData\ReplyWasNotFoundedExceptio
 use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
-use App\Services\OpenAI\ChatGPT\ChatGPTServiceInterface;
+use App\Repositories\Telegram\User\UserRepositoryInterface;
+use App\Services\OpenAI\Chat\ChatServiceInterface as OpenAICHatServiceInterface;
 use App\Services\Telegram\TelegramServiceInterface;
 use App\Telegram\Abstract\Actions\AbstractTelegramAction;
 
 class GlobalMessageHandlerAction extends AbstractTelegramAction
 {
     public function __construct(
-        readonly ChatGPTServiceInterface $chatGPTService,
-        readonly ChatRepositoryInterface $chatRepository
+        readonly OpenAICHatServiceInterface $chatService,
+        readonly ChatRepositoryInterface $chatRepository,
+        readonly UserRepositoryInterface $userRepository,
     ) {}
 
     /**
@@ -30,16 +32,19 @@ class GlobalMessageHandlerAction extends AbstractTelegramAction
         $chatData = $this->chatRepository->find($telegramDataRepository->getChat());
 
         try {
-            // check if bot was replied
-            $telegramDataRepository->getReplyMessage();
+            // find reply message - if not just skip it
+            $userReply = $telegramDataRepository->getUserReply();
 
-            // if interactive mode enabled - answer with memory, instead its just answer
-            $answer = match ($chatData->interactive_mode) {
-                true => $this->chatGPTService->answerWithMemory($chatData),
-                false => $this->chatGPTService->answer($chatMessageData),
-            };
+            // check if that was kimi
+            if ($userReply->is_bot) {
+                // if interactive mode enabled - answer in interactive mode, instead its just answer
+                $answer = match ($chatData->interactive_mode) {
+                    true => $this->chatService->interactiveAnswer($chatData),
+                    false => $this->chatService->answer($chatMessageData),
+                };
 
-            $telegramService->replyToMessageAndSave($answer->content);
+                $telegramService->replyToMessageAndSave($answer->content);
+            }
         } catch (TelegramUserNotFoundException|ReplyWasNotFoundedException|ChatMessageAlreadyExistsException $e) {
 
         }

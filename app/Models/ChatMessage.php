@@ -35,10 +35,10 @@ class ChatMessage extends Model
     }
 
     /**
-     * @return HasOne<ChatGPTMemory>
+     * @return HasOne<OpenaiChatMemory>
      */
     public function chat_gpt_memory(): HasOne
     {
-        return $this->hasOne(ChatGPTMemory::class);
+        return $this->hasOne(OpenaiChatMemory::class);
     }
 }

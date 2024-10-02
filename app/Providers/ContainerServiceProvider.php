@@ -3,15 +3,16 @@
 namespace App\Providers;
 
 use App\Repositories\Abstract\RepositoryFactoryInterface;
-use App\Repositories\OpenAI\ChatGPT\Memory\MemoryRepositoryInterface;
+use App\Repositories\OpenAI\Chat\Memory\MemoryRepositoryInterface;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
 use App\Repositories\Telegram\ChatMessage\ChatMessageRepositoryInterface;
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
 use App\Repositories\Telegram\User\UserRepositoryInterface;
 use App\Services\Abstract\ServiceFactoryInterface;
-use App\Services\OpenAI\ChatGPT\ChatGPTServiceInterface;
-use App\Services\OpenAI\ChatGPT\Memory\MemoryServiceInterface;
-use App\Services\OpenAI\Tokenizer\TokenizerServiceInterface;
+use App\Services\OpenAI\Chat\ChatServiceInterface as OpenAIChatServiceInterface;
+use App\Services\OpenAI\Chat\Memory\MemoryServiceInterface as OpenAIChatMemoryServiceInterface;
+use App\Services\OpenAI\Chat\Tokenizer\TokenizerServiceInterface as OpenAIChatTokenizerServiceInterface;
+use App\Services\Telegram\TelegramServiceInterface;
 use Illuminate\Support\ServiceProvider;
 
 class ContainerServiceProvider extends ServiceProvider
@@ -22,9 +23,10 @@ class ContainerServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->bindManyServices([
-            TokenizerServiceInterface::class,
-            ChatGPTServiceInterface::class,
-            MemoryServiceInterface::class,
+            TelegramServiceInterface::class,
+            OpenAIChatServiceInterface::class,
+            OpenAIChatMemoryServiceInterface::class,
+            OpenAIChatTokenizerServiceInterface::class,
         ]);
 
         $this->bindManyRepositories([

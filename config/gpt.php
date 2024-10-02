@@ -4,7 +4,7 @@ return [
     'default' => env('GPT_MODEL', 'gpt-4o'),
     'key' => env('GPT_KEY', ''),
 
-    /** @link \App\Services\OpenAI\AIModelsEnum */
+    /** @link \App\Services\OpenAI\Chat\Enums\ChatModelEnum */
     'models' => [
         'gpt-4o' => [
             'limit' => 124000,

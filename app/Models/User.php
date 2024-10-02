@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\Abstract\Types\ChatInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
-class User extends Model implements ChatInterface
+class User extends Model
 {
     use HasFactory;
 
@@ -34,13 +33,5 @@ class User extends Model implements ChatInterface
     public function chat(): MorphOne
     {
         return $this->morphOne(Chat::class, 'target');
-    }
-
-    /**
-     * Chat with a user (private)
-     */
-    public function getChatId(): int
-    {
-        return $this->id;
     }
 }

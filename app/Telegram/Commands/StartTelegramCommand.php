@@ -14,6 +14,6 @@ class StartTelegramCommand extends AbstractTelegramCommand
 
     public function onHandle(TelegramServiceInterface $telegramService, TelegramDataRepositoryInterface $telegramDataRepository): void
     {
-        $telegramService->sendMessage('Hello world');
+        $telegramService->sendMessage(__('telegram.commands.start.greetings'));
     }
 }

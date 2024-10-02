@@ -9,18 +9,15 @@ use App\Exceptions\Repositories\Telegram\ChatMessageAlreadyExistsException;
 use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
-use App\Services\OpenAI\ChatGPT\ChatGPTServiceInterface;
+use App\Services\OpenAI\Chat\ChatServiceInterface as OpenAIChatServiceInterface;
 use App\Services\Telegram\TelegramServiceInterface;
 use App\Telegram\Abstract\Actions\AbstractTelegramAction;
 
 class AskKimiAction extends AbstractTelegramAction
 {
-    public readonly ChatGPTServiceInterface $chatGPTService;
-
-    public function __construct()
-    {
-        $this->chatGPTService = app(ChatGPTServiceInterface::class);
-    }
+    public function __construct(
+        readonly OpenAIChatServiceInterface $chatService
+    ) {}
 
     /**
      * @throws ChatMessageAlreadyExistsException
@@ -36,7 +33,7 @@ class AskKimiAction extends AbstractTelegramAction
             return;
         }
 
-        $answer = $this->chatGPTService->answerWithMemory($chat);
+        $answer = $this->chatService->interactiveAnswer($chat);
 
         $telegramService->replyToMessageAndSave($answer->content, $message);
     }
