@@ -13,9 +13,12 @@ use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryFactory;
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
 use App\Services\Abstract\AbstractService;
 use SergiX44\Nutgram\Nutgram;
+use SergiX44\Nutgram\Telegram\Properties\ParseMode;
 
 class NutgramTelegramService extends AbstractService implements TelegramServiceInterface
 {
+    const PARSE_MODE = ParseMode::MARKDOWN;
+
     private readonly TelegramDataRepositoryInterface $telegramDataRepository;
 
     private readonly ChatMessageRepositoryInterface $chatMessageRepository;
@@ -34,7 +37,7 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
         }
 
         $message = $this->nutgram
-            ->sendMessage($content, reply_to_message_id: $chatMessageData->id);
+            ->sendMessage($content, parse_mode: self::PARSE_MODE, reply_to_message_id: $chatMessageData->id);
 
         return ChatMessageData::fromNutgramMessage($message);
     }
@@ -61,7 +64,7 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
         }
 
         $message = $this->nutgram
-            ->sendMessage($content, chat_id: $chatData->target->id);
+            ->sendMessage($content, chat_id: $chatData->target->id, parse_mode: self::PARSE_MODE);
 
         return ChatMessageData::fromNutgramMessage($message);
     }

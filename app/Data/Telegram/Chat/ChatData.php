@@ -20,7 +20,7 @@ class ChatData extends Data
 
     public function __construct(
         readonly int $id,
-        mixed $target,
+        User|Group|Supergroup|Channel $target,
         readonly bool $interactive_mode = false,
     ) {
         if ($target instanceof User) {
@@ -31,8 +31,6 @@ class ChatData extends Data
             $this->target = SupergroupData::from($target);
         } elseif ($target instanceof Channel) {
             $this->target = ChannelData::from($target);
-        } else {
-            $this->target = $target;
         }
     }
 }

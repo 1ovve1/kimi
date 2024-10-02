@@ -42,9 +42,4 @@ class ChatUser extends Model
     {
         return $this->hasMany(ChatMessage::class);
     }
-
-    public function fullName(): string
-    {
-        return $this->first_name.$this->lats_name;
-    }
 }

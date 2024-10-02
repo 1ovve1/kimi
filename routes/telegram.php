@@ -4,8 +4,9 @@
 
 use App\Telegram\Actions\GlobalMessageHandlerAction;
 use App\Telegram\Actions\OpenAI\ChatGPT\AskKimiAction;
-use App\Telegram\Commands\ChatGPT\AskKimiTelegramCommand;
-use App\Telegram\Commands\ChatGPT\InteractiveCommand;
+use App\Telegram\Commands\OpenAI\Chat\AskKimiCommand;
+use App\Telegram\Commands\OpenAI\Chat\InteractiveCommand;
+use App\Telegram\Commands\OpenAI\Chat\ResetCommand;
 use App\Telegram\Commands\StartTelegramCommand;
 use App\Telegram\Middlewares\StoreTelegramRequestInDatabaseMiddleware;
 use SergiX44\Nutgram\Nutgram;
@@ -20,7 +21,8 @@ use SergiX44\Nutgram\Nutgram;
 |
 */
 
-$bot->registerCommand(AskKimiTelegramCommand::class);
+$bot->registerCommand(AskKimiCommand::class);
+$bot->registerCommand(ResetCommand::class);
 
 $bot->group(function (Nutgram $bot) {
     $bot->onMessage(GlobalMessageHandlerAction::class);

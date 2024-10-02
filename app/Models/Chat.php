@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Abstract\Types\ChatInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -23,7 +22,7 @@ class Chat extends Model
     public $incrementing = false;
 
     /**
-     * @return MorphTo<ChatInterface>
+     * @return MorphTo<Channel|Group|Supergroup|User>
      */
     public function target(): MorphTo
     {

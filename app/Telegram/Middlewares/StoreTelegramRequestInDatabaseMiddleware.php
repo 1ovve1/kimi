@@ -9,7 +9,7 @@ use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
 use App\Repositories\Telegram\ChatMessage\ChatMessageRepositoryInterface;
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
 use App\Repositories\Telegram\User\UserRepositoryInterface;
-use App\Services\OpenAI\ChatGPT\Memory\MemoryServiceInterface;
+use App\Services\OpenAI\Chat\Memory\MemoryServiceInterface;
 use App\Services\Telegram\TelegramServiceInterface;
 use App\Telegram\Abstract\Middlewares\AbstractTelegramMiddleware;
 

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Repositories\Telegram\User;
 
+use App\Data\Telegram\Chat\ChatMessageData;
 use App\Data\Telegram\UserData;
+use App\Models\ChatMessage;
 use App\Models\User;
 use App\Repositories\Abstract\AbstractRepository;
 use Illuminate\Support\Facades\Log;
@@ -21,6 +23,16 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
 
             Log::info('New user...', $user->toArray());
         }
+
+        return UserData::from($user);
+    }
+
+    public function findByMessage(ChatMessageData $chatMessageData): UserData
+    {
+        /** @var ChatMessage $message */
+        $message = ChatMessage::with('chat_user.user')->find($chatMessageData->id);
+
+        $user = $message->chat_user->user;
 
         return UserData::from($user);
     }
