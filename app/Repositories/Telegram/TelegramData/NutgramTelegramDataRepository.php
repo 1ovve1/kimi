@@ -76,6 +76,6 @@ class NutgramTelegramDataRepository extends AbstractRepository implements Telegr
     {
         $user = $this->nutgram->message()->reply_to_message?->from ?? throw new ReplyWasNotFoundedException();
 
-        return UserData::from($user);
+        return UserData::from($user->toArray());
     }
 }

@@ -32,7 +32,7 @@ class ChatService extends AbstractService implements ChatServiceInterface
 
     public function interactiveAnswer(ChatData $chatData): DialogMessageData
     {
-        $memories = $this->memoryService->collectMemories($chatData);
+        $memories = $this->memoryService->collectMemories($chatData)->reverse();
 
         return $this->parseResponse(
             $this->client->create($this->character->createRequestBody(...$memories))
