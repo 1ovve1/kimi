@@ -20,7 +20,7 @@ class ChatData extends Data
 
     public function __construct(
         readonly int $id,
-        User|Group|Supergroup|Channel $target,
+        mixed $target,
         readonly bool $interactive_mode = false,
     ) {
         if ($target instanceof User) {

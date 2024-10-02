@@ -30,10 +30,9 @@ class ChatServiceFactory implements ServiceFactoryInterface
         $client = OpenAi::factory()
             ->withApiKey(config('gpt.key'))
             ->make();
-        $character = new CharactersFactory(ChatModelEnum::default());
 
         return App::make(ChatService::class, [
-            'client' => $client,
+            'client' => $client->chat(),
             'character' => $character,
         ]);
     }

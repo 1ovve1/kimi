@@ -12,9 +12,9 @@ use App\Telegram\Abstract\Commands\AbstractTelegramCommand;
 
 class ResetCommand extends AbstractTelegramCommand
 {
-    protected string $command = 'interactive';
+    protected string $command = 'reset';
 
-    protected ?string $description = 'activate interactive mode';
+    protected ?string $description = 'reset chat memories';
 
     public function onHandle(TelegramServiceInterface $telegramService, TelegramDataRepositoryInterface $telegramDataRepository): void
     {

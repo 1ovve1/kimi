@@ -41,4 +41,9 @@ interface TelegramDataRepositoryInterface extends RepositoryInterface
      * Get bot instance
      */
     public function getMe(): UserData;
+
+    /**
+     * Get user in reply message
+     */
+    public function getUserReply(): UserData;
 }

@@ -33,8 +33,7 @@ class GlobalMessageHandlerAction extends AbstractTelegramAction
 
         try {
             // find reply message - if not just skip it
-            $replyMessage = $telegramDataRepository->getReplyMessage();
-            $userReply = $this->userRepository->findByMessage($replyMessage);
+            $userReply = $telegramDataRepository->getUserReply();
 
             // check if that was kimi
             if ($userReply->is_bot) {
