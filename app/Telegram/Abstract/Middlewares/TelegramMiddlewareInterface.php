@@ -7,7 +7,12 @@ namespace App\Telegram\Abstract\Middlewares;
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
 use App\Services\Telegram\TelegramServiceInterface;
 
-interface TelegramMiddlewareInterface
-{
-    public function handle(TelegramServiceInterface $telegramService, TelegramDataRepositoryInterface $telegramDataRepository): void;
+interface TelegramMiddlewareInterface {
+    /**
+     * @param TelegramServiceInterface $telegramService - service for interact with the telegram api
+     * @param TelegramDataRepositoryInterface $telegramDataRepository - repository that contains telegram request information
+     * @param callable $next - action callback
+     * @return void
+     */
+    public function handle(TelegramServiceInterface $telegramService, TelegramDataRepositoryInterface $telegramDataRepository, callable $next): void;
 }

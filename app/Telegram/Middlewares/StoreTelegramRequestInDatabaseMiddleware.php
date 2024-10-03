@@ -34,7 +34,7 @@ class StoreTelegramRequestInDatabaseMiddleware extends AbstractTelegramMiddlewar
     /**
      * @throws ChatNotFoundException
      */
-    public function handle(TelegramServiceInterface $telegramService, TelegramDataRepositoryInterface $telegramDataRepository): void
+    public function handle(TelegramServiceInterface $telegramService, TelegramDataRepositoryInterface $telegramDataRepository, callable $next): void
     {
         $chat = $this->chatRepository->save(
             $telegramDataRepository->getChat()
@@ -59,5 +59,7 @@ class StoreTelegramRequestInDatabaseMiddleware extends AbstractTelegramMiddlewar
             }
         } catch (TelegramUserNotFoundException|ChatMessageAlreadyExistsException) {
         }
+
+        $next();
     }
 }
