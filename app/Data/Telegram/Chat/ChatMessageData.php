@@ -9,7 +9,7 @@ class ChatMessageData extends Data
 {
     public function __construct(
         readonly int $id,
-        readonly string $text
+        readonly string $text = ''
     ) {}
 
     public static function fromNutgramMessage(Message $message): self
