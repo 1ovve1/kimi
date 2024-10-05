@@ -27,4 +27,9 @@ interface ChatMessageRepositoryInterface extends RepositoryInterface
      * @param  ChatMessageData  $chatMessageData  - message id and content
      */
     public function create(ChatData $chatData, UserData $userData, ChatMessageData $chatMessageData): ChatMessageData;
+
+    /**
+     * Delete chat message from db
+     */
+    public function delete(ChatData $chatData, ChatMessageData $chatMessageData): int;
 }

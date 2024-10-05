@@ -34,9 +34,7 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
 
     public function replyToMessage(string $content, ?ChatMessageData $chatMessageData = null): ChatMessageData
     {
-        if ($chatMessageData === null) {
-            $chatMessageData = $this->telegramDataRepository->getMessage();
-        }
+        $chatMessageData ??= $this->telegramDataRepository->getMessage();
 
         if (self::PARSE_MODE === ParseMode::MARKDOWN) {
             $content = $this->escapeCharactersForMarkdown($content);
@@ -65,9 +63,7 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
 
     public function sendMessage(string $content, ?ChatData $chatData = null): ChatMessageData
     {
-        if ($chatData === null) {
-            $chatData = $this->telegramDataRepository->getChat();
-        }
+        $chatData ??= $this->telegramDataRepository->getChat();
 
         if (self::PARSE_MODE === ParseMode::MARKDOWN) {
             $content = $this->escapeCharactersForMarkdown($content);
@@ -92,6 +88,15 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
             $this->telegramDataRepository->getUser(),
             $chatMessage
         );
+    }
+
+    public function deleteMessage(ChatMessageData $chatMessageData, ?ChatData $chatData = null): void
+    {
+        $chatData ??= $this->telegramDataRepository->getChat();
+
+        $this->nutgram->deleteMessage($chatData->id, $chatMessageData->id);
+
+        $this->chatMessageRepository->delete($chatData, $chatMessageData);
     }
 
     /**

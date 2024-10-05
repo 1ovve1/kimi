@@ -26,4 +26,6 @@ interface TelegramServiceInterface
      * @throws TelegramUserNotFoundException
      */
     public function sendMessageAndSave(string $content, ?CHatData $chatData = null): ChatMessageData;
+
+    public function deleteMessage(ChatMessageData $chatMessageData, ?ChatData $chatData = null): void;
 }

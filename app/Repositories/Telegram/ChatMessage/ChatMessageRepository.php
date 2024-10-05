@@ -16,6 +16,7 @@ use App\Models\ChatMessage;
 use App\Models\ChatUser;
 use App\Models\User;
 use App\Repositories\Abstract\AbstractRepository;
+use Illuminate\Database\Eloquent\Builder;
 
 class ChatMessageRepository extends AbstractRepository implements ChatMessageRepositoryInterface
 {
@@ -54,5 +55,15 @@ class ChatMessageRepository extends AbstractRepository implements ChatMessageRep
         $chatMessage = $chatUser->chat_messages()->save(new ChatMessage($chatMessageData->toArray()));
 
         return ChatMessageData::from($chatMessage);
+    }
+
+    public function delete(ChatData $chatData, ChatMessageData $chatMessageData): int
+    {
+        /** @var Chat $chat */
+        $chat = Chat::find($chatData->id) ?? throw new ChatNotFoundException($chatData);
+
+        return ChatMessage::whereHas("chat_user", fn (Builder $builder) =>
+            $builder->where('chat_id', $chat->id)
+        )->delete();
     }
 }
