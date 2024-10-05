@@ -7,11 +7,13 @@ namespace App\Services\OpenAI\Chat\Memory;
 use App\Data\OpenAI\Chat\DialogMessageData;
 use App\Data\Telegram\Chat\ChatData;
 use App\Data\Telegram\Chat\ChatMessageData;
+use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use Illuminate\Support\Collection;
 
 interface MemoryServiceInterface
 {
     /**
+     * @throws ChatNotFoundException
      * @return Collection<DialogMessageData>
      */
     public function collectMemories(ChatData $chatData): Collection;

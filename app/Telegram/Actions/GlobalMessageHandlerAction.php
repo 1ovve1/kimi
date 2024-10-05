@@ -38,14 +38,18 @@ class GlobalMessageHandlerAction extends AbstractTelegramAction
             // check if that was kimi
             if ($userReply->is_bot) {
                 // if interactive mode enabled - answer in interactive mode, instead its just answer
-                $answer = match ($chatData->interactive_mode) {
-                    true => $this->chatService->interactiveAnswer($chatData),
-                    false => $this->chatService->answer($chatMessageData),
-                };
+                try {
+                    $answer = match ($chatData->interactive_mode) {
+                        true => $this->chatService->interactiveAnswer($chatData),
+                        false => $this->chatService->answer($chatMessageData),
+                    };
+                } catch (ChatNotFoundException $e) {
+                    $answer = $this->chatService->answer($chatMessageData);
+                }
 
                 $telegramService->replyToMessageAndSave($answer->content);
             }
-        } catch (TelegramUserNotFoundException|ReplyWasNotFoundedException|ChatMessageAlreadyExistsException $e) {
+        } catch (TelegramUserNotFoundException|ChatMessageAlreadyExistsException $e) {
 
         }
     }
