@@ -50,7 +50,7 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
             ));
         });
 
-        return $collection;
+        return $collection->reverse();
     }
 
     public function memorize(ChatMessageData $chatMessageData, int $tokens_count): ChatMessageData
