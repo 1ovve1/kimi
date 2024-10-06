@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions\Repositories\Telegram;
+namespace App\Exceptions\Repositories\Telegram\User;
 
 use App\Data\Telegram\UserData;
 use App\Exceptions\CheckedException;
@@ -11,6 +11,6 @@ class UserNotFoundException extends CheckedException
 
     public function __construct(UserData $userData)
     {
-        parent::__construct($this->formatMessage($userData->id, $this->print($userData)));
+        parent::__construct($this->formatMessage($userData->tg_id, $this->print($userData)));
     }
 }

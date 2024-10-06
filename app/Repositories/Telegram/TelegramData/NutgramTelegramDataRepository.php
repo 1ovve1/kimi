@@ -26,56 +26,41 @@ class NutgramTelegramDataRepository extends AbstractRepository implements Telegr
     {
         $message = $this->nutgram->message();
 
-        return ChatMessageData::fromNutgramMessage($message);
+        return ChatMessageData::fromNutgram($message);
     }
 
     public function getReplyMessage(): ChatMessageData
     {
         $message = $this->nutgram->message()->reply_to_message ?? throw new ReplyWasNotFoundedException;
 
-        return ChatMessageData::fromNutgramMessage($message);
+        return ChatMessageData::fromNutgram($message);
     }
 
     public function getChat(): ChatData
     {
         $chat = $this->nutgram->chat();
 
-        $target = match ($chat->type) {
-            ChatType::PRIVATE => PrivateData::from($chat->toArray()),
-            ChatType::GROUP => GroupData::from($chat->toArray()),
-            ChatType::SUPERGROUP => SupergroupData::from($chat->toArray()),
-            ChatType::CHANNEL => ChannelData::from($chat->toArray()),
-            ChatType::SENDER => throw new \Exception('To be implemented'),
-        };
-
-        return ChatData::from([
-            ...$chat->toArray(),
-            'target' => $target,
-        ]);
+        return ChatData::fromNutgram($chat);
     }
 
     public function getUser(): UserData
     {
         $user = $this->nutgram->user();
 
-        return UserData::from(
-            $user->toArray()
-        );
+        return UserData::fromNutgram($user);
     }
 
     public function getMe(): UserData
     {
         $user = $this->nutgram->getMe();
 
-        return UserData::from(
-            $user->toArray()
-        );
+        return UserData::fromNutgram($user);
     }
 
     public function getUserReply(): UserData
     {
         $user = $this->nutgram->message()->reply_to_message?->from ?? throw new ReplyWasNotFoundedException();
 
-        return UserData::from($user->toArray());
+        return UserData::fromNutgram($user);
     }
 }

@@ -15,7 +15,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
 {
     public function save(UserData $userData): UserData
     {
-        $user = User::find($userData->id);
+        $user = User::whereId($userData->id)->orWhere('tg_id', $userData->tg_id)->first();
 
         if ($user === null) {
             $user = new User($userData->toArray());

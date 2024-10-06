@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('chat_messages', function (Blueprint $table) {
-            $table->bigInteger('id')->primary();
+            $table->id();
+
+            $table->bigInteger('tg_id');
 
             $table->foreignId('chat_user_id')->constrained()->cascadeOnDelete();
 

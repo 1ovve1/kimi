@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Telegram\Actions;
 
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
-use App\Exceptions\Repositories\Telegram\ChatMessageAlreadyExistsException;
+use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageAlreadyExistsException;
 use App\Exceptions\Repositories\Telegram\TelegramData\ReplyWasNotFoundedException;
 use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
@@ -15,7 +15,7 @@ use App\Services\OpenAI\Chat\ChatServiceInterface as OpenAICHatServiceInterface;
 use App\Services\Telegram\TelegramServiceInterface;
 use App\Telegram\Abstract\Actions\AbstractTelegramAction;
 
-class GlobalMessageHandlerAction extends AbstractTelegramAction
+class KimiReplyHandler extends AbstractTelegramAction
 {
     public function __construct(
         readonly OpenAICHatServiceInterface $chatService,
@@ -49,8 +49,7 @@ class GlobalMessageHandlerAction extends AbstractTelegramAction
 
                 $telegramService->replyToMessageAndSave($answer->content);
             }
-        } catch (TelegramUserNotFoundException|ChatMessageAlreadyExistsException $e) {
-
+        } catch (ReplyWasNotFoundedException|TelegramUserNotFoundException|ChatMessageAlreadyExistsException $e) {
         }
     }
 }

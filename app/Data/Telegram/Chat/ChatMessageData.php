@@ -8,15 +8,17 @@ use Spatie\LaravelData\Data;
 class ChatMessageData extends Data
 {
     public function __construct(
-        readonly int $id,
+        readonly ?int $id,
+        readonly int $tg_id,
         readonly string $text = ''
     ) {}
 
-    public static function fromNutgramMessage(Message $message): self
+    public static function fromNutgram(Message $message): self
     {
         return self::from([
             ...$message->toArray(),
-            'id' => $message->message_id,
+            'id' => null,
+            'tg_id' => $message->message_id,
         ]);
     }
 }

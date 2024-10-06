@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions\Repositories\Telegram;
+namespace App\Exceptions\Repositories\Telegram\User;
 
 use App\Data\Telegram\Chat\ChatData;
 use App\Data\Telegram\UserData;

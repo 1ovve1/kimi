@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('channels', function (Blueprint $table) {
             $table->id();
 
+            $table->bigInteger('tg_id')->unique();
+
             $table->string('title');
 
             $table->timestamps();

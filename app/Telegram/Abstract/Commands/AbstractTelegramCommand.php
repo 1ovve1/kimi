@@ -19,7 +19,7 @@ abstract class AbstractTelegramCommand extends Command implements TelegramComman
     {
         $this->onHandle(
             app(TelegramServiceFactory::class)->getFromNutgram($nutgram),
-            app(TelegramDataRepositoryFactory::class)->fromNutgram($nutgram),
+            app(TelegramDataRepositoryFactory::class)->getFromNutgram($nutgram),
         );
     }
 

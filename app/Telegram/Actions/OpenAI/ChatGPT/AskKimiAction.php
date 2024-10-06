@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Telegram\Actions\OpenAI\ChatGPT;
 
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
-use App\Exceptions\Repositories\Telegram\ChatMessageAlreadyExistsException;
+use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageAlreadyExistsException;
 use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;

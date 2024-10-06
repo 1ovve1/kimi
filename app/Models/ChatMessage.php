@@ -15,7 +15,7 @@ class ChatMessage extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id',
+        'tg_id',
         'chat_user_id',
         'text',
     ];
@@ -23,8 +23,6 @@ class ChatMessage extends Model
     protected $casts = [
         'text' => 'encrypted',
     ];
-
-    public $incrementing = false;
 
     /**
      * @return BelongsTo<ChatUser>
