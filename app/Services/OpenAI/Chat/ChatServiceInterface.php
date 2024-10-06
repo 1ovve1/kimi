@@ -11,6 +11,8 @@ use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 
 interface ChatServiceInterface
 {
+    public function dryAnswer(string $question): DialogMessageData;
+
     public function answer(ChatMessageData $chatMessageData): DialogMessageData;
 
     /**

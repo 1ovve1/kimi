@@ -71,10 +71,24 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
     public function deleteAll(ChatData $chatData): int
     {
         /** @var Chat $chat */
-        $chat = Chat::find($chatData->id) ?? throw new ChatNotFoundException($chatData);
+        $chat = Chat::whereId($chatData->id)
+            ->orWhereHas("target", fn(Builder $builder) => $builder->where('tg_id', $chatData->target->tg_id))
+            ->first() ?? throw new ChatNotFoundException($chatData);
 
         return ChatMessage::whereHas('chat_user', function (Builder $builder) use ($chat) {
             $builder->where('chat_id', $chat->id);
         })->delete();
+    }
+
+    public function count(ChatData $chatData): int
+    {
+        /** @var Chat $chat */
+        $chat = Chat::whereId($chatData->id)
+            ->orWhereHas("target", fn(Builder $builder) => $builder->where('tg_id', $chatData->target->tg_id))
+            ->first() ?? throw new ChatNotFoundException($chatData);
+
+        return ChatMessage::whereHas('chat_gpt_memory')
+            ->whereHas('chat_user', fn(Builder $builder) => $builder->where('chat_id', $chat->id))
+            ->count();
     }
 }

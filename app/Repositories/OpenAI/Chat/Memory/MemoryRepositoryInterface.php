@@ -23,4 +23,6 @@ interface MemoryRepositoryInterface extends RepositoryInterface
     public function memorize(ChatMessageData $chatMessageData, int $tokens_count): ChatMessageData;
 
     public function deleteAll(ChatData $chatData): int;
+
+    public function count(ChatData $chatData): int;
 }

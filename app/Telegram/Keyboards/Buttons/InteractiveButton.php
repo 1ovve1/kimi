@@ -32,6 +32,8 @@ class InteractiveButton extends AbstractTelegramButton
             $chatRepository->setInteractiveMode($chat, true);
             $callbackService->answerCallback(__('telegram.commands.interactive.enabled'));
         }
+
+        $telegramService->updateKeyboard((new StartKeyboardFactory())->get());
     }
 
     static function text(): string
@@ -41,11 +43,9 @@ class InteractiveButton extends AbstractTelegramButton
 
         $chat = $chatRepository->find($telegramDataRepository->getChat());
 
-        if ($chat->interactive_mode) {
-            return __('telegram.commands.interactive.name') . ' ✅';
-        } else {
-            return __('telegram.commands.interactive.name') . ' ❌';
-        }
+        return __('telegram.commands.interactive.name', [
+            'status' => $chat->interactive_mode ? '✅': '❌'
+        ]);
     }
 
     private function getChatRepository(): ChatRepositoryInterface

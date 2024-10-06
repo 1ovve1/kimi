@@ -24,7 +24,7 @@ abstract class AbstractTelegramButton implements TelegramButtonInterface
 
     static function name(): string
     {
-        return Str::replace('\\', '.', self::class);
+        return Str::replace('\\', '.', static::class);
     }
 
     public function __invoke(Nutgram $nutgram): void

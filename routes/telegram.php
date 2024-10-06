@@ -9,6 +9,7 @@ use App\Telegram\Commands\OpenAI\Chat\InteractiveCommand;
 use App\Telegram\Commands\OpenAI\Chat\ResetCommand;
 use App\Telegram\Commands\StartTelegramCommand;
 use App\Telegram\Keyboards\Buttons\InteractiveButton;
+use App\Telegram\Keyboards\Buttons\ResetButton;
 use App\Telegram\Middlewares\AutoDeleteMessagesMiddleware;
 use App\Telegram\Middlewares\StoreTelegramRequestInDatabaseMiddleware;
 use SergiX44\Nutgram\Nutgram;
@@ -39,3 +40,4 @@ $bot->group(function (Nutgram $bot) {
 })->middleware(StoreTelegramRequestInDatabaseMiddleware::class);
 
 $bot->onCallbackQueryData(InteractiveButton::name(), InteractiveButton::class);
+$bot->onCallbackQueryData(ResetButton::name(), ResetButton::class);
