@@ -18,6 +18,7 @@ use App\Models\Group;
 use App\Models\Supergroup;
 use App\Models\User;
 use App\Repositories\Abstract\AbstractRepository;
+use Illuminate\Database\Eloquent\Builder;
 use RuntimeException;
 use SergiX44\Nutgram\Telegram\Properties\ChatType;
 
@@ -25,13 +26,11 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
 {
     public function save(ChatData $chatData): ChatData
     {
-        $chat = Chat::with('target')->find($chatData->id);
-
-        if ($chat === null) {
+        try {
+            return $this->find($chatData);
+        } catch (ChatNotFoundException $e) {
             return $this->create($chatData);
         }
-
-        return ChatData::from($chat);
     }
 
     public function create(ChatData $chatData): ChatData
@@ -45,7 +44,6 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
         };
 
         $chat = Chat::create([
-            'id' => $chatData->id,
             'target_type' => $targetData->type->value,
             'target_id' => $targetData->id,
         ]);
@@ -88,9 +86,11 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
     public function appendUser(ChatData $chatData, UserData $userData): UserData
     {
         /** @var Chat $chat */
-        $chat = Chat::find($chatData->id) ?? throw new ChatNotFoundException($chatData);
+        $chat = Chat::whereId($chatData->id)
+            ->orWhereHas('target', fn(Builder $builder) => $builder->where('tg_id', $chatData->target->tg_id))
+            ->first() ?? throw new ChatNotFoundException($chatData);
 
-        if ($chat->users()->where('users.id', $userData->id)->doesntExist()) {
+        if ($chat->users()->where('users.id', $userData->id)->orWhere('users.tg_id', $userData->tg_id)->doesntExist()) {
             $chat->chat_users()->save(new ChatUser(['user_id' => $userData->id]));
         }
 
@@ -100,7 +100,9 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
     public function setInteractiveMode(ChatData $chatData, bool $interactiveMode): ChatData
     {
         /** @var Chat $chat */
-        $chat = Chat::find($chatData->id) ?? throw new ChatNotFoundException($chatData);
+        $chat = Chat::whereId($chatData->id)
+            ->orWhereHas('target', fn(Builder $builder) => $builder->where('tg_id', $chatData->target->tg_id))
+            ->first() ?? throw new ChatNotFoundException($chatData);
 
         $chat->interactive_mode = $interactiveMode;
         $chat->save();
@@ -110,7 +112,10 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
 
     public function find(ChatData $chatData): ChatData
     {
-        $chat = Chat::find($chatData->id) ?? throw new ChatNotFoundException($chatData);
+        $chat = Chat::whereId($chatData->id)
+            ->orWhereHas('target', fn(Builder $builder) => $builder->where('tg_id', $chatData->target->tg_id))
+            ->with('target')
+            ->first() ?? throw new ChatNotFoundException($chatData);
 
         return ChatData::from($chat);
     }

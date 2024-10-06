@@ -11,11 +11,9 @@ class Supergroup extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id',
+        'tg_id',
         'title',
     ];
-
-    public $incrementing = false;
 
     /**
      * @return MorphOne<Chat>

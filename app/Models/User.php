@@ -16,7 +16,7 @@ class User extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'id',
+        'tg_id',
         'first_name',
         'last_name',
         'username',
@@ -24,8 +24,6 @@ class User extends Model
         'is_premium',
         'is_bot',
     ];
-
-    public $incrementing = false;
 
     /**
      * @return MorphOne<Chat>

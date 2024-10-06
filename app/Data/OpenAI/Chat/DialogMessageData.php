@@ -24,4 +24,9 @@ class DialogMessageData extends Data
     {
         return new self($chatMessageData->text, DialogRolesEnum::USER);
     }
+
+    public static function fromUser(string $content): self
+    {
+        return new self($content, DialogRolesEnum::USER);
+    }
 }

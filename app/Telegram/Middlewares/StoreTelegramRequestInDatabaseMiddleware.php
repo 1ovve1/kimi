@@ -3,7 +3,7 @@
 namespace App\Telegram\Middlewares;
 
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
-use App\Exceptions\Repositories\Telegram\ChatMessageAlreadyExistsException;
+use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageAlreadyExistsException;
 use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
 use App\Repositories\Telegram\ChatMessage\ChatMessageRepositoryInterface;
@@ -54,8 +54,9 @@ class StoreTelegramRequestInDatabaseMiddleware extends AbstractTelegramMiddlewar
             $this->chatRepository->appendUser($chat, $user);
 
             if ($chat->interactive_mode) {
-                $this->chatMessageRepository->save($chat, $user, $telegramDataRepository->getMessage());
-                $this->memoryService->memorize($telegramDataRepository->getMessage());
+                $this->memoryService->memorize(
+                    $this->chatMessageRepository->save($chat, $user, $telegramDataRepository->getMessage())
+                );
             }
         } catch (TelegramUserNotFoundException|ChatMessageAlreadyExistsException) {
         }

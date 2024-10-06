@@ -7,10 +7,10 @@ use App\Exceptions\CheckedException;
 
 class ChatNotFoundException extends CheckedException
 {
-    protected string $messageFormat = "Chat with id '%s' was not founded. Chat data given:\n%s";
+    protected string $messageFormat = "Chat with tg_id '%s' was not founded. Chat data given:\n%s";
 
     public function __construct(ChatData $chatData)
     {
-        parent::__construct($this->formatMessage($chatData->id, $this->print($chatData->toArray())));
+        parent::__construct($this->formatMessage($chatData->target->tg_id, $this->print($chatData->toArray())));
     }
 }

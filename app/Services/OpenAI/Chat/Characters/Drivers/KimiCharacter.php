@@ -10,6 +10,6 @@ readonly class KimiCharacter extends AbstractCharacter
 {
     protected function boilerplate(): string
     {
-        return __('openai.chat.characters.kimi');
+        return __('openai.chat.characters.kimi.desc');
     }
 }

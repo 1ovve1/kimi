@@ -14,13 +14,10 @@ return new class extends Migration
         Schema::create('chat_users', function (Blueprint $table) {
             $table->id();
 
-            $table->bigInteger('chat_id')->index();
-            $table->bigInteger('user_id')->index();
+            $table->foreignId('chat_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
             $table->timestamps();
-
-            $table->foreign('chat_id')->references('id')->on('chats')->cascadeOnDelete();
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
 

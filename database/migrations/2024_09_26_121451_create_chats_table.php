@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('chats', function (Blueprint $table) {
-            $table->bigInteger('id')->primary();
+            $table->id();
 
             $table->string('target_type');
-            $table->bigInteger('target_id');
+            $table->unsignedBigInteger('target_id')->unique();
 
             $table->timestamps();
 

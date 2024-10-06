@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Exceptions\Repositories\Telegram;
+namespace App\Exceptions\Repositories\Telegram\ChatMessage;
 
 use App\Data\Telegram\Chat\ChatMessageData;
 use App\Exceptions\CheckedException;
 
 class ChatMessageAlreadyExistsException extends CheckedException
 {
-    protected string $messageFormat = 'Chat message id already exists in db (%s)';
+    protected string $messageFormat = 'Chat message with id already exists in db (%s)';
 
     public function __construct(ChatMessageData $chatMessageData)
     {

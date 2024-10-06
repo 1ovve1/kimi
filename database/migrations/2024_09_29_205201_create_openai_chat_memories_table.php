@@ -14,9 +14,7 @@ return new class extends Migration
         Schema::create('openai_chat_memories', function (Blueprint $table) {
             $table->id();
 
-            $table->bigInteger('chat_message_id')->index();
-
-            $table->foreign('chat_message_id')->references('id')->on('chat_messages')->cascadeOnDelete();
+            $table->foreignId('chat_message_id')->constrained()->cascadeOnDelete();
         });
     }
 

@@ -18,7 +18,7 @@ abstract class AbstractTelegramAction implements TelegramActionInterface
 
         $this->handle(
             app(TelegramServiceFactory::class)->getFromNutgram($nutgram),
-            app(TelegramDataRepositoryFactory::class)->fromNutgram($nutgram)
+            app(TelegramDataRepositoryFactory::class)->getFromNutgram($nutgram)
         );
     }
 

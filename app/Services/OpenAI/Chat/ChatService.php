@@ -23,6 +23,13 @@ class ChatService extends AbstractService implements ChatServiceInterface
         readonly MemoryServiceInterface $memoryService
     ) {}
 
+    public function dryAnswer(string $question): DialogMessageData
+    {
+        return $this->parseResponse(
+            $this->client->create($this->character->createRequestBody(DialogMessageData::fromUser($question)))
+        );
+    }
+
     public function answer(ChatMessageData $chatMessageData): DialogMessageData
     {
         return $this->parseResponse(
@@ -32,7 +39,7 @@ class ChatService extends AbstractService implements ChatServiceInterface
 
     public function interactiveAnswer(ChatData $chatData): DialogMessageData
     {
-        $memories = $this->memoryService->collectMemories($chatData)->reverse();
+        $memories = $this->memoryService->collectMemories($chatData);
 
         return $this->parseResponse(
             $this->client->create($this->character->createRequestBody(...$memories))

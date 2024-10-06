@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Telegram\Actions;
 
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
-use App\Exceptions\Repositories\Telegram\ChatMessageAlreadyExistsException;
+use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageAlreadyExistsException;
 use App\Exceptions\Repositories\Telegram\TelegramData\ReplyWasNotFoundedException;
 use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
@@ -15,7 +15,7 @@ use App\Services\OpenAI\Chat\ChatServiceInterface as OpenAICHatServiceInterface;
 use App\Services\Telegram\TelegramServiceInterface;
 use App\Telegram\Abstract\Actions\AbstractTelegramAction;
 
-class GlobalMessageHandlerAction extends AbstractTelegramAction
+class KimiReplyHandler extends AbstractTelegramAction
 {
     public function __construct(
         readonly OpenAICHatServiceInterface $chatService,
@@ -38,15 +38,18 @@ class GlobalMessageHandlerAction extends AbstractTelegramAction
             // check if that was kimi
             if ($userReply->is_bot) {
                 // if interactive mode enabled - answer in interactive mode, instead its just answer
-                $answer = match ($chatData->interactive_mode) {
-                    true => $this->chatService->interactiveAnswer($chatData),
-                    false => $this->chatService->answer($chatMessageData),
-                };
+                try {
+                    $answer = match ($chatData->interactive_mode) {
+                        true => $this->chatService->interactiveAnswer($chatData),
+                        false => $this->chatService->answer($chatMessageData),
+                    };
+                } catch (ChatNotFoundException $e) {
+                    $answer = $this->chatService->answer($chatMessageData);
+                }
 
                 $telegramService->replyToMessageAndSave($answer->content);
             }
-        } catch (TelegramUserNotFoundException|ReplyWasNotFoundedException|ChatMessageAlreadyExistsException $e) {
-
+        } catch (ReplyWasNotFoundedException|TelegramUserNotFoundException|ChatMessageAlreadyExistsException $e) {
         }
     }
 }

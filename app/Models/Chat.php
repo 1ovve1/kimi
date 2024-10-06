@@ -13,13 +13,11 @@ class Chat extends Model
     use HasFactory;
 
     protected $fillable = [
-        'id',
+        'tg_id',
         'target_type',
         'target_id',
         'interactive_mode',
     ];
-
-    public $incrementing = false;
 
     /**
      * @return MorphTo<Channel|Group|Supergroup|User>

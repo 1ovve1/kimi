@@ -14,7 +14,7 @@ class TelegramDataRepositoryFactory implements RepositoryFactoryInterface
         return app(NutgramTelegramDataRepository::class);
     }
 
-    public function fromNutgram(Nutgram $nutgram): TelegramDataRepositoryInterface
+    public function getFromNutgram(Nutgram $nutgram): TelegramDataRepositoryInterface
     {
         return new NutgramTelegramDataRepository($nutgram);
     }

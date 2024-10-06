@@ -44,6 +44,8 @@ interface TelegramDataRepositoryInterface extends RepositoryInterface
 
     /**
      * Get user in reply message
+     *
+     * @throws ReplyWasNotFoundedException
      */
     public function getUserReply(): UserData;
 }

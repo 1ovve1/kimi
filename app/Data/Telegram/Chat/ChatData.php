@@ -10,6 +10,8 @@ use App\Models\Channel;
 use App\Models\Group;
 use App\Models\Supergroup;
 use App\Models\User;
+use SergiX44\Nutgram\Telegram\Properties\ChatType;
+use SergiX44\Nutgram\Telegram\Types\Chat\Chat;
 use Spatie\LaravelData\Attributes\Computed;
 use Spatie\LaravelData\Data;
 
@@ -19,7 +21,7 @@ class ChatData extends Data
     public readonly null|PrivateData|ChannelData|GroupData|SupergroupData $target;
 
     public function __construct(
-        readonly int $id,
+        readonly ?int $id,
         mixed $target,
         readonly bool $interactive_mode = false,
     ) {
@@ -34,5 +36,23 @@ class ChatData extends Data
         } else {
             $this->target = $target;
         }
+    }
+
+    static function fromNutgram(Chat $chat): self
+    {
+        $target = match ($chat->type) {
+            ChatType::PRIVATE => PrivateData::fromNutgram($chat),
+            ChatType::GROUP => GroupData::fromNutgram($chat),
+            ChatType::SUPERGROUP => SupergroupData::fromNutgram($chat),
+            ChatType::CHANNEL => ChannelData::fromNutgram($chat),
+            ChatType::SENDER => throw new \RuntimeException('To be implemented'),
+            default => null,
+        };
+
+        return self::from([
+            ...$chat->toArray(),
+            'id' => null,
+            'target' => $target,
+        ]);
     }
 }
