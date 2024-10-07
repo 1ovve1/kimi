@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Data\Telegram\Chat\ChatMessageData;
+use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageNotFoundException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -38,5 +40,14 @@ class ChatMessage extends Model
     public function chat_gpt_memory(): HasOne
     {
         return $this->hasOne(OpenaiChatMemory::class);
+    }
+
+    /**
+     * @throws ChatMessageNotFoundException
+     */
+    static function findForChatMessageData(ChatMessageData $chatMessageData): ChatMessage
+    {
+        return ChatMessage::whereId($chatMessageData->id)
+            ->first() ?? throw new ChatMessageNotFoundException($chatMessageData);
     }
 }

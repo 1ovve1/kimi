@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Data\Telegram\Chat\Types\PrivateData;
+use App\Data\Telegram\UserData;
+use App\Exceptions\Repositories\Telegram\User\UserNotFoundException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -31,5 +34,15 @@ class User extends Model
     public function chat(): MorphOne
     {
         return $this->morphOne(Chat::class, 'target');
+    }
+
+    /**
+     * @throws UserNotFoundException
+     */
+    static function findForUserData(UserData|PrivateData $userData): User
+    {
+        return User::whereId($userData->id)
+            ->orWhere('tg_id', $userData->tg_id)
+            ->first() ?? throw new UserNotFoundException($userData);
     }
 }

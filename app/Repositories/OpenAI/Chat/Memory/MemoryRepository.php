@@ -24,10 +24,7 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
      */
     public function getAllLatest(ChatData $chatData): Collection
     {
-        /** @var Chat $chat */
-        $chat = Chat::where($chatData->id)
-            ->orWhereHas('target', fn(Builder $builder) => $builder->where('tg_id', $chatData->target->tg_id))
-            ->first() ?? throw new ChatNotFoundException($chatData);
+        $chat = Chat::findForChatData($chatData);
 
         $messages = ChatMessage::whereHas('chat_user', function (Builder $builder) use ($chat) {
             $builder->where('chat_id', $chat->id);
@@ -57,8 +54,7 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
 
     public function memorize(ChatMessageData $chatMessageData, int $tokens_count): ChatMessageData
     {
-        /** @var ChatMessage $chatMessage */
-        $chatMessage = ChatMessage::find($chatMessageData->id) ?? throw new ChatMessageNotFoundException($chatMessageData);
+        $chatMessage = ChatMessage::findForChatMessageData($chatMessageData);
 
         $chatMessage->chat_gpt_memory()->save(new OpenaiChatMemory(['tokens_count' => $tokens_count]));
 
@@ -70,10 +66,7 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
      */
     public function deleteAll(ChatData $chatData): int
     {
-        /** @var Chat $chat */
-        $chat = Chat::whereId($chatData->id)
-            ->orWhereHas("target", fn(Builder $builder) => $builder->where('tg_id', $chatData->target->tg_id))
-            ->first() ?? throw new ChatNotFoundException($chatData);
+        $chat = Chat::findForChatData($chatData);
 
         return ChatMessage::whereHas('chat_user', function (Builder $builder) use ($chat) {
             $builder->where('chat_id', $chat->id);
@@ -82,10 +75,7 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
 
     public function count(ChatData $chatData): int
     {
-        /** @var Chat $chat */
-        $chat = Chat::whereId($chatData->id)
-            ->orWhereHas("target", fn(Builder $builder) => $builder->where('tg_id', $chatData->target->tg_id))
-            ->first() ?? throw new ChatNotFoundException($chatData);
+        $chat = Chat::findForChatData($chatData);
 
         return ChatMessage::whereHas('chat_gpt_memory')
             ->whereHas('chat_user', fn(Builder $builder) => $builder->where('chat_id', $chat->id))

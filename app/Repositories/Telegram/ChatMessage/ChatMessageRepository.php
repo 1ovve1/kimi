@@ -41,14 +41,9 @@ class ChatMessageRepository extends AbstractRepository implements ChatMessageRep
      */
     public function create(ChatData $chatData, UserData $userData, ChatMessageData $chatMessageData): ChatMessageData
     {
-        /** @var Chat $chat */
-        $chat = Chat::whereId($chatData->id)
-            ->orWhereHas('target', fn(Builder $builder) => $builder->where('tg_id', $chatData->target->tg_id))
-            ->first() ?? throw new ChatNotFoundException($chatData);
-        /** @var User $user */
-        $user = User::whereId($userData->id)
-            ->orWhere('tg_id', $userData->tg_id)
-            ->first() ?? throw new UserNotFoundException($userData);
+        $chat = Chat::findForChatData($chatData);
+        $user = User::findForUserData($userData);
+
         /** @var ChatUser $chatUser */
         $chatUser = $chat->chat_users()
             ->where('user_id', $user->id)
@@ -61,20 +56,22 @@ class ChatMessageRepository extends AbstractRepository implements ChatMessageRep
 
     public function find(ChatMessageData $chatMessageData): ChatMessageData
     {
-        $chatMessage = ChatMessage::find($chatMessageData->id) ?? throw new ChatMessageNotFoundException($chatMessageData);
+        $chatMessage = ChatMessage::findForChatMessageData($chatMessageData);
 
         return ChatMessageData::from($chatMessage);
     }
 
-    public function delete(ChatMessageData $chatMessageData): int
+    /**
+     * @throws ChatMessageNotFoundException
+     */
+    public function delete(ChatMessageData $chatMessageData): bool
     {
-        return ChatMessage::whereId($chatMessageData->id)->delete();
+        return ChatMessage::findForChatMessageData($chatMessageData)->delete();
     }
 
     public function chat(ChatMessageData $chatMessageData): ChatData
     {
-        /** @var ChatMessage $chatMessage */
-        $chatMessage = ChatMessage::find($chatMessageData->id) ?? throw new ChatMessageNotFoundException($chatMessageData);
+        $chatMessage = ChatMessage::findForChatMessageData($chatMessageData);
 
         return ChatData::from($chatMessage->chat_user->chat);
     }

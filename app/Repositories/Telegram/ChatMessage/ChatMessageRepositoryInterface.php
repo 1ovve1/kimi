@@ -37,7 +37,7 @@ interface ChatMessageRepositoryInterface extends RepositoryInterface
     /**
      * Delete chat message from db
      */
-    public function delete(ChatMessageData $chatMessageData): int;
+    public function delete(ChatMessageData $chatMessageData): bool;
 
     // RELATIONS
 
