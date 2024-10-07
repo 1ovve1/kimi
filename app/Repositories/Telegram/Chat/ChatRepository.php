@@ -104,7 +104,7 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
         $chat = Chat::findForChatData($chatData);
         $user = User::findForUserData($userData);
 
-        if ($chat->whereHas('users', fn (Builder $builder) => $builder->where('users.id', $user->id)->orWhere('users.tg_id', $user->tg_id))->doesntExist()) {
+        if ($chat->chat_users()->where('chat_users.id', $user->id)->doesntExist()) {
             $chat->chat_users()->save(new ChatUser(['user_id' => $user->id]));
         }
 

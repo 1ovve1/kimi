@@ -19,7 +19,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
         try {
             $user = User::findForUserData($userData);
         } catch (UserNotFoundException $e) {
-            $user = User::create($userData);
+            $user = User::create($userData->toArray());
 
             Log::info('New user...', $user->toArray());
         }
