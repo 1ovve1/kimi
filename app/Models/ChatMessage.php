@@ -45,7 +45,7 @@ class ChatMessage extends Model
     /**
      * @throws ChatMessageNotFoundException
      */
-    static function findForChatMessageData(ChatMessageData $chatMessageData): ChatMessage
+    public static function findForChatMessageData(ChatMessageData $chatMessageData): ChatMessage
     {
         return ChatMessage::whereId($chatMessageData->id)
             ->first() ?? throw new ChatMessageNotFoundException($chatMessageData);

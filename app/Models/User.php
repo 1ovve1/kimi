@@ -39,7 +39,7 @@ class User extends Model
     /**
      * @throws UserNotFoundException
      */
-    static function findForUserData(UserData|PrivateData $userData): User
+    public static function findForUserData(UserData|PrivateData $userData): User
     {
         return User::whereId($userData->id)
             ->orWhere('tg_id', $userData->tg_id)

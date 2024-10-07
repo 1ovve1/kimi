@@ -16,7 +16,6 @@ use App\Models\ChatMessage;
 use App\Models\ChatUser;
 use App\Models\User;
 use App\Repositories\Abstract\AbstractRepository;
-use Illuminate\Database\Eloquent\Builder;
 
 class ChatMessageRepository extends AbstractRepository implements ChatMessageRepositoryInterface
 {

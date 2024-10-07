@@ -4,8 +4,6 @@ namespace App\Exceptions\Repositories\Telegram\Chat;
 
 use App\Data\Telegram\Chat\Types\SupergroupData;
 use App\Exceptions\CheckedException;
-use Exception;
-use Throwable;
 
 class SupergroupNotFoundException extends CheckedException
 {

@@ -7,8 +7,6 @@ namespace App\Services\Telegram\TelegramDataService;
 use App\Data\Telegram\Chat\ChatData;
 use App\Data\Telegram\Chat\ChatMessageData;
 use App\Data\Telegram\UserData;
-use App\Exceptions\Repositories\Telegram\TelegramData\ReplyWasNotFoundedException;
-use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
 use App\Repositories\Telegram\ChatMessage\ChatMessageRepositoryInterface;
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
@@ -22,9 +20,7 @@ class TelegramDataServiceService extends AbstractService implements TelegramData
         readonly ChatRepositoryInterface $chatRepository,
         readonly ChatMessageRepositoryInterface $chatMessageRepository,
         readonly UserRepositoryInterface $userRepository,
-    )
-    {
-    }
+    ) {}
 
     public function getMessage(): ChatMessageData
     {
@@ -57,6 +53,4 @@ class TelegramDataServiceService extends AbstractService implements TelegramData
     {
         // TODO: Implement getUserReply() method.
     }
-
-
 }

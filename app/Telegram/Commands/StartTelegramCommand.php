@@ -32,7 +32,7 @@ class StartTelegramCommand extends AbstractTelegramCommand
         } catch (ChatNotFoundException|TelegramUserNotFoundException $e) {
         }
 
-        $startKeyboardFactory = new StartKeyboardFactory();
+        $startKeyboardFactory = new StartKeyboardFactory;
         $greetings = $openAiChatService->dryAnswer(__('openai.chat.characters.kimi.greetings'))->content;
 
         $telegramService->sendMessageWithKeyboard($greetings, $startKeyboardFactory->get());

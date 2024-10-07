@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace App\Telegram\Keyboards\Buttons;
 
-use App\Data\Telegram\Chat\ChatData;
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
-use App\Services\OpenAI\Chat\Memory\MemoryServiceInterface;
 use App\Services\Telegram\Callback\CallbackServiceInterface;
 use App\Services\Telegram\TelegramServiceInterface;
 use App\Telegram\Abstract\Keyboards\Buttons\AbstractTelegramButton;
@@ -19,7 +17,7 @@ class InteractiveButton extends AbstractTelegramButton
     /**
      * @throws ChatNotFoundException
      */
-    function handle(TelegramServiceInterface $telegramService, CallbackServiceInterface $callbackService, TelegramDataRepositoryInterface $telegramDataRepository): void
+    public function handle(TelegramServiceInterface $telegramService, CallbackServiceInterface $callbackService, TelegramDataRepositoryInterface $telegramDataRepository): void
     {
         $chatRepository = $this->getChatRepository();
 
@@ -33,10 +31,10 @@ class InteractiveButton extends AbstractTelegramButton
             $callbackService->answerCallback(__('telegram.commands.interactive.enabled'));
         }
 
-        $telegramService->updateKeyboard((new StartKeyboardFactory())->get());
+        $telegramService->updateKeyboard((new StartKeyboardFactory)->get());
     }
 
-    static function text(): string
+    public static function text(): string
     {
         $telegramDataRepository = app(TelegramDataRepositoryInterface::class);
         $chatRepository = app(ChatRepositoryInterface::class);
@@ -44,7 +42,7 @@ class InteractiveButton extends AbstractTelegramButton
         $chat = $chatRepository->find($telegramDataRepository->getChat());
 
         return __('telegram.commands.interactive.name', [
-            'status' => $chat->interactive_mode ? '✅': '❌'
+            'status' => $chat->interactive_mode ? '✅' : '❌',
         ]);
     }
 

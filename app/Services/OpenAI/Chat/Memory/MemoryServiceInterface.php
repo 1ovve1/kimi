@@ -13,8 +13,9 @@ use Illuminate\Support\Collection;
 interface MemoryServiceInterface
 {
     /**
-     * @throws ChatNotFoundException
      * @return Collection<DialogMessageData>
+     *
+     * @throws ChatNotFoundException
      */
     public function collectMemories(ChatData $chatData): Collection;
 

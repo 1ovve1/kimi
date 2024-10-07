@@ -25,7 +25,6 @@ class Group extends Model
         return $this->morphOne(Chat::class, 'target');
     }
 
-
     /**
      * @throws GroupNotFoundException
      */

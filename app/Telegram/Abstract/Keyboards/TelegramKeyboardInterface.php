@@ -9,5 +9,6 @@ use App\Telegram\Abstract\Keyboards\Buttons\TelegramButtonInterface;
 interface TelegramKeyboardInterface
 {
     public function make(): mixed;
+
     public function addRow(TelegramButtonInterface ...$button): self;
 }

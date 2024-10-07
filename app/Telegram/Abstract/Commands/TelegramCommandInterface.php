@@ -13,9 +13,8 @@ use App\Services\Telegram\TelegramServiceInterface;
 interface TelegramCommandInterface
 {
     /**
-     * @param TelegramServiceInterface $telegramService - service for interact with the telegram api
-     * @param TelegramDataRepositoryInterface $telegramDataRepository - repository that contains telegram request information
-     * @return void
+     * @param  TelegramServiceInterface  $telegramService  - service for interact with the telegram api
+     * @param  TelegramDataRepositoryInterface  $telegramDataRepository  - repository that contains telegram request information
      */
     public function onHandle(TelegramServiceInterface $telegramService, TelegramDataRepositoryInterface $telegramDataRepository): void;
 }

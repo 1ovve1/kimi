@@ -8,7 +8,6 @@ use App\Data\OpenAI\Chat\DialogMessageData;
 use App\Data\Telegram\Chat\ChatData;
 use App\Data\Telegram\Chat\ChatMessageData;
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
-use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageNotFoundException;
 use App\Models\Chat;
 use App\Models\ChatMessage;
 use App\Models\OpenaiChatMemory;
@@ -78,7 +77,7 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
         $chat = Chat::findForChatData($chatData);
 
         return ChatMessage::whereHas('chat_gpt_memory')
-            ->whereHas('chat_user', fn(Builder $builder) => $builder->where('chat_id', $chat->id))
+            ->whereHas('chat_user', fn (Builder $builder) => $builder->where('chat_id', $chat->id))
             ->count();
     }
 }

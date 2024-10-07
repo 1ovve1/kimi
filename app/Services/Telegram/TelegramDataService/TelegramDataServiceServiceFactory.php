@@ -7,10 +7,9 @@ namespace App\Services\Telegram\TelegramDataService;
 use App\Services\Abstract\ServiceFactoryInterface;
 use Illuminate\Support\Facades\App;
 
-
 class TelegramDataServiceServiceFactory implements ServiceFactoryInterface
 {
-    function get(): TelegramDataServiceServiceInterface
+    public function get(): TelegramDataServiceServiceInterface
     {
         return App::make(TelegramDataServiceService::class);
     }

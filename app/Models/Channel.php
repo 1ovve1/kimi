@@ -28,7 +28,7 @@ class Channel extends Model
     /**
      * @throws ChannelNotFoundException
      */
-    static function findForChannelData(ChannelData $channelData): Channel
+    public static function findForChannelData(ChannelData $channelData): Channel
     {
         return Channel::whereId($channelData->id)
             ->orWhere('tg_id', $channelData->tg_id)

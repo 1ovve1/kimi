@@ -49,10 +49,10 @@ class Chat extends Model
     /**
      * @throws ChatNotFoundException
      */
-    static function findForChatData(ChatData $chatData): Chat
+    public static function findForChatData(ChatData $chatData): Chat
     {
         return Chat::whereId($chatData->id)
-            ->orWhereHas('target', fn(Builder $builder) => $builder->where('tg_id', $chatData->target->tg_id))
+            ->orWhereHas('target', fn (Builder $builder) => $builder->where('tg_id', $chatData->target->tg_id))
             ->with('target')
             ->first() ?? throw new ChatNotFoundException($chatData);
     }

@@ -10,11 +10,11 @@ use App\Services\Telegram\TelegramServiceInterface;
 
 interface TelegramButtonInterface
 {
-    function handle(TelegramServiceInterface $telegramService, CallbackServiceInterface $callbackService, TelegramDataRepositoryInterface $telegramDataRepository): void;
+    public function handle(TelegramServiceInterface $telegramService, CallbackServiceInterface $callbackService, TelegramDataRepositoryInterface $telegramDataRepository): void;
 
-    function make(): mixed;
+    public function make(): mixed;
 
-    static function text(): string;
+    public static function text(): string;
 
-    static function name(): string;
+    public static function name(): string;
 }

@@ -4,8 +4,6 @@ namespace App\Exceptions\Repositories\Telegram\Chat;
 
 use App\Data\Telegram\Chat\Types\ChannelData;
 use App\Exceptions\CheckedException;
-use Exception;
-use Throwable;
 
 class ChannelNotFoundException extends CheckedException
 {
