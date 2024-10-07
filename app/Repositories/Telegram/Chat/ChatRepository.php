@@ -10,7 +10,11 @@ use App\Data\Telegram\Chat\Types\GroupData;
 use App\Data\Telegram\Chat\Types\PrivateData;
 use App\Data\Telegram\Chat\Types\SupergroupData;
 use App\Data\Telegram\UserData;
+use App\Exceptions\Repositories\Telegram\Chat\ChannelNotFoundException;
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
+use App\Exceptions\Repositories\Telegram\Chat\GroupNotFoundException;
+use App\Exceptions\Repositories\Telegram\Chat\SupergroupNotFoundException;
+use App\Exceptions\Repositories\Telegram\User\UserNotFoundException;
 use App\Models\Channel;
 use App\Models\Chat;
 use App\Models\ChatUser;
@@ -37,9 +41,9 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
     {
         $targetData = match ($chatData->target->type) {
             ChatType::PRIVATE => $this->createPrivate($chatData->target),
-            ChatType::GROUP => $this->createGroup($chatData->target),
-            ChatType::SUPERGROUP => $this->createSupergroup($chatData->target),
-            ChatType::CHANNEL => $this->createChannel($chatData->target),
+            ChatType::GROUP => $this->findOrCreateGroup($chatData->target),
+            ChatType::SUPERGROUP => $this->findOrCreateSupergroup($chatData->target),
+            ChatType::CHANNEL => $this->findOrCreateChannel($chatData->target),
             ChatType::SENDER => throw new RuntimeException('To be implemented'),
         };
 
@@ -53,45 +57,55 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
 
     public function createPrivate(PrivateData $privateData): PrivateData
     {
-        $private = User::find($privateData->id);
-
-        if ($private === null) {
+        try {
+            $private = User::findForUserData($privateData);
+        } catch (UserNotFoundException $e) {
             $private = User::create($privateData->toArray());
         }
 
         return PrivateData::from($private);
     }
 
-    public function createGroup(GroupData $groupData): GroupData
+    public function findOrCreateGroup(GroupData $groupData): GroupData
     {
-        $group = Group::create($groupData->toArray());
+        try {
+            $group = Group::findForGroupData($groupData);
+        } catch (GroupNotFoundException $e) {
+            $group = Group::create($groupData->toArray());
+        }
 
         return GroupData::from($group);
     }
 
-    public function createSupergroup(SupergroupData $supergroupData): SupergroupData
+    public function findOrCreateSupergroup(SupergroupData $supergroupData): SupergroupData
     {
-        $supergroup = Supergroup::create($supergroupData->toArray());
+        try {
+            $supergroup = Supergroup::findForSupergroupData($supergroupData);
+        } catch (SupergroupNotFoundException $e) {
+            $supergroup = Supergroup::create($supergroupData->toArray());
+        }
 
         return SupergroupData::from($supergroup);
     }
 
-    public function createChannel(ChannelData $channelData): ChannelData
+    public function findOrCreateChannel(ChannelData $channelData): ChannelData
     {
-        $channel = Channel::create($channelData->toArray());
+        try {
+            $channel = Channel::findForChannelData($channelData);
+        } catch (ChannelNotFoundException $e) {
+            $channel = Channel::create($channelData);
+        }
 
         return ChannelData::from($channel);
     }
 
     public function appendUser(ChatData $chatData, UserData $userData): UserData
     {
-        /** @var Chat $chat */
-        $chat = Chat::whereId($chatData->id)
-            ->orWhereHas('target', fn(Builder $builder) => $builder->where('tg_id', $chatData->target->tg_id))
-            ->first() ?? throw new ChatNotFoundException($chatData);
+        $chat = Chat::findForChatData($chatData);
+        $user = User::findForUserData($userData);
 
-        if ($chat->users()->where('users.id', $userData->id)->orWhere('users.tg_id', $userData->tg_id)->doesntExist()) {
-            $chat->chat_users()->save(new ChatUser(['user_id' => $userData->id]));
+        if ($chat->chat_users()->where('chat_users.id', $user->id)->doesntExist()) {
+            $chat->chat_users()->save(new ChatUser(['user_id' => $user->id]));
         }
 
         return $userData;
@@ -99,10 +113,7 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
 
     public function setInteractiveMode(ChatData $chatData, bool $interactiveMode): ChatData
     {
-        /** @var Chat $chat */
-        $chat = Chat::whereId($chatData->id)
-            ->orWhereHas('target', fn(Builder $builder) => $builder->where('tg_id', $chatData->target->tg_id))
-            ->first() ?? throw new ChatNotFoundException($chatData);
+        $chat = Chat::findForChatData($chatData);
 
         $chat->interactive_mode = $interactiveMode;
         $chat->save();
@@ -112,10 +123,7 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
 
     public function find(ChatData $chatData): ChatData
     {
-        $chat = Chat::whereId($chatData->id)
-            ->orWhereHas('target', fn(Builder $builder) => $builder->where('tg_id', $chatData->target->tg_id))
-            ->with('target')
-            ->first() ?? throw new ChatNotFoundException($chatData);
+        $chat = Chat::findForChatData($chatData);
 
         return ChatData::from($chat);
     }

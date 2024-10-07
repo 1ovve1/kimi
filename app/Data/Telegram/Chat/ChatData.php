@@ -38,7 +38,7 @@ class ChatData extends Data
         }
     }
 
-    static function fromNutgram(Chat $chat): self
+    public static function fromNutgram(Chat $chat): self
     {
         $target = match ($chat->type) {
             ChatType::PRIVATE => PrivateData::fromNutgram($chat),

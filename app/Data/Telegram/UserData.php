@@ -21,7 +21,7 @@ class UserData extends Data
         readonly bool $is_bot = false,
     ) {}
 
-    static function fromNutgram(\SergiX44\Nutgram\Telegram\Types\User\User $user): self
+    public static function fromNutgram(\SergiX44\Nutgram\Telegram\Types\User\User $user): self
     {
         return self::from([
             ...$user->toArray(),

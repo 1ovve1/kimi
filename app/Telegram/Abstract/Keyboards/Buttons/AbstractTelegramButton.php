@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Telegram\Abstract\Keyboards\Buttons;
 
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryFactory;
-use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
 use App\Services\Telegram\Callback\CallbackServiceFactory;
 use App\Services\Telegram\TelegramServiceFactory;
 use Illuminate\Support\Str;
@@ -14,7 +13,7 @@ use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 
 abstract class AbstractTelegramButton implements TelegramButtonInterface
 {
-    function make(): InlineKeyboardButton
+    public function make(): InlineKeyboardButton
     {
         return InlineKeyboardButton::make(
             text: $this->text(),
@@ -22,7 +21,7 @@ abstract class AbstractTelegramButton implements TelegramButtonInterface
         );
     }
 
-    static function name(): string
+    public static function name(): string
     {
         return Str::replace('\\', '.', static::class);
     }

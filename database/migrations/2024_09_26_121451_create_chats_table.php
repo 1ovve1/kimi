@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('target_type');
-            $table->unsignedBigInteger('target_id')->unique();
+            $table->unsignedBigInteger('target_id');
 
             $table->timestamps();
 

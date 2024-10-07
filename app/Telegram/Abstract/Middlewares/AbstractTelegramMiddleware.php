@@ -15,7 +15,7 @@ abstract class AbstractTelegramMiddleware implements TelegramMiddlewareInterface
         $this->handle(
             app(TelegramServiceFactory::class)->getFromNutgram($nutgram),
             app(TelegramDataRepositoryFactory::class)->getFromNutgram($nutgram),
-            fn() => $next($nutgram)
+            fn () => $next($nutgram)
         );
     }
 }

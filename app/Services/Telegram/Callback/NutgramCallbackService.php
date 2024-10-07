@@ -12,12 +12,9 @@ class NutgramCallbackService extends AbstractService implements CallbackServiceI
 {
     protected TelegramDataRepositoryInterface $telegramDataRepository;
 
-
     public function __construct(
         protected Nutgram $nutgram
-    )
-    {
-    }
+    ) {}
 
     public function answerCallback(string $text): void
     {

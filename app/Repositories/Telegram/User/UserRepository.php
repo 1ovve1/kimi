@@ -6,6 +6,7 @@ namespace App\Repositories\Telegram\User;
 
 use App\Data\Telegram\Chat\ChatMessageData;
 use App\Data\Telegram\UserData;
+use App\Exceptions\Repositories\Telegram\User\UserNotFoundException;
 use App\Models\ChatMessage;
 use App\Models\User;
 use App\Repositories\Abstract\AbstractRepository;
@@ -15,11 +16,10 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
 {
     public function save(UserData $userData): UserData
     {
-        $user = User::whereId($userData->id)->orWhere('tg_id', $userData->tg_id)->first();
-
-        if ($user === null) {
-            $user = new User($userData->toArray());
-            $user->save();
+        try {
+            $user = User::findForUserData($userData);
+        } catch (UserNotFoundException $e) {
+            $user = User::create($userData->toArray());
 
             Log::info('New user...', $user->toArray());
         }
@@ -29,8 +29,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
 
     public function findByMessage(ChatMessageData $chatMessageData): UserData
     {
-        /** @var ChatMessage $message */
-        $message = ChatMessage::with('chat_user.user')->find($chatMessageData->id);
+        $message = ChatMessage::findForChatMessageData($chatMessageData);
 
         $user = $message->chat_user->user;
 

@@ -13,10 +13,10 @@ class StartKeyboardFactory
 {
     public function get(): TelegramKeyboardInterface
     {
-        return (new TelegramKeyboard())
+        return (new TelegramKeyboard)
             ->addRow(
-                new InteractiveButton(),
-                new ResetButton(),
+                new InteractiveButton,
+                new ResetButton,
             );
     }
 }

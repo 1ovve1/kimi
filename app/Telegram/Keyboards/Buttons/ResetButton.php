@@ -14,7 +14,7 @@ use App\Telegram\Keyboards\StartKeyboardFactory;
 
 class ResetButton extends AbstractTelegramButton
 {
-    function handle(TelegramServiceInterface $telegramService, CallbackServiceInterface $callbackService, TelegramDataRepositoryInterface $telegramDataRepository): void
+    public function handle(TelegramServiceInterface $telegramService, CallbackServiceInterface $callbackService, TelegramDataRepositoryInterface $telegramDataRepository): void
     {
         $memoryService = app(MemoryServiceInterface::class);
 
@@ -22,10 +22,10 @@ class ResetButton extends AbstractTelegramButton
 
         $callbackService->answerCallback(__('telegram.commands.reset.info', ['count' => $count]));
 
-        $telegramService->updateKeyboard((new StartKeyboardFactory())->get());
+        $telegramService->updateKeyboard((new StartKeyboardFactory)->get());
     }
 
-    static function text(): string
+    public static function text(): string
     {
         $telegramDataRepository = app(TelegramDataRepositoryInterface::class);
         $memoryRepository = app(MemoryRepositoryInterface::class);

@@ -24,7 +24,6 @@ use SergiX44\Nutgram\Nutgram;
 |
 */
 
-
 $bot->registerCommand(StartTelegramCommand::class);
 $bot->registerCommand(AskKimiCommand::class);
 
