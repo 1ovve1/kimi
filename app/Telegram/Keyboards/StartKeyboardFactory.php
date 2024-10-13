@@ -16,6 +16,7 @@ class StartKeyboardFactory
         return (new TelegramKeyboard)
             ->addRow(
                 new InteractiveButton,
+            )->addRow(
                 new ResetButton,
             );
     }
