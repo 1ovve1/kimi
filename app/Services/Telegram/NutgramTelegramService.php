@@ -21,7 +21,7 @@ use SergiX44\Nutgram\Telegram\Properties\ParseMode;
 
 class NutgramTelegramService extends AbstractService implements TelegramServiceInterface
 {
-    const PARSE_MODE = ParseMode::MARKDOWN;
+    const PARSE_MODE = ParseMode::MARKDOWN_LEGACY;
 
     private readonly TelegramDataRepositoryInterface $telegramDataRepository;
 
