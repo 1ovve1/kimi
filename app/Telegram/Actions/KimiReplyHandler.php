@@ -8,48 +8,54 @@ use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageAlreadyExistsException;
 use App\Exceptions\Repositories\Telegram\TelegramData\ReplyWasNotFoundedException;
 use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
-use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
+use App\Exceptions\Repositories\Telegram\User\UserNotFoundException;
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
-use App\Repositories\Telegram\User\UserRepositoryInterface;
 use App\Services\OpenAI\Chat\ChatServiceInterface as OpenAICHatServiceInterface;
+use App\Services\Telegram\TelegramData\TelegramDataServiceInterface;
 use App\Services\Telegram\TelegramServiceInterface;
 use App\Telegram\Abstract\Actions\AbstractTelegramAction;
 
 class KimiReplyHandler extends AbstractTelegramAction
 {
-    public function __construct(
-        readonly OpenAICHatServiceInterface $chatService,
-        readonly ChatRepositoryInterface $chatRepository,
-        readonly UserRepositoryInterface $userRepository,
-    ) {}
-
     /**
+     * @throws ChatMessageAlreadyExistsException
      * @throws ChatNotFoundException
+     * @throws UserNotFoundException
+     * @throws ReplyWasNotFoundedException
+     * @throws TelegramUserNotFoundException
      */
-    public function handle(TelegramServiceInterface $telegramService, TelegramDataRepositoryInterface $telegramDataRepository): void
-    {
-        $chatMessageData = $telegramDataRepository->getMessage();
-        $chatData = $this->chatRepository->find($telegramDataRepository->getChat());
+    public function handle(
+        OpenAICHatServiceInterface $chatService,
+        TelegramServiceInterface $telegramService,
+        TelegramDataServiceInterface $telegramDataService,
+        TelegramDataRepositoryInterface $telegramDataRepository
+    ): void {
+        $chatData = $telegramDataService->resolveChat();
 
         try {
-            // find reply message - if not just skip it
-            $userReply = $telegramDataRepository->getUserReply();
+            if ($chatData->interactive_mode) {
+                $userReply = $telegramDataService->resolveUserReply();
 
-            // check if that was kimi
-            if ($userReply->is_bot) {
-                // if interactive mode enabled - answer in interactive mode, instead its just answer
-                try {
-                    $answer = match ($chatData->interactive_mode) {
-                        true => $this->chatService->interactiveAnswer($chatData),
-                        false => $this->chatService->answer($chatMessageData),
-                    };
-                } catch (ChatNotFoundException $e) {
-                    $answer = $this->chatService->answer($chatMessageData);
+                if ($userReply->is_bot) {
+                    $chatMessageData = $telegramDataService->resolveMessage();
+
+                    $answer = $chatService->interactiveAnswer($chatData);
+
+                    $telegramService->replyToMessageAndSave($answer->content, $chatMessageData);
                 }
+            } else {
+                $userReply = $telegramDataRepository->getUserReply();
 
-                $telegramService->replyToMessageAndSave($answer->content);
+                if ($userReply->is_bot) {
+                    $chatMessageData = $telegramDataRepository->getMessage();
+
+                    $answer = $chatService->answer($chatMessageData);
+
+                    $telegramService->replyToMessage($answer->content, $chatMessageData);
+                }
             }
-        } catch (ReplyWasNotFoundedException|TelegramUserNotFoundException|ChatMessageAlreadyExistsException $e) {
+        } catch (ReplyWasNotFoundedException) {
+            // do nothing
         }
     }
 }

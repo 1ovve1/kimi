@@ -4,22 +4,27 @@ declare(strict_types=1);
 
 namespace App\Telegram\Abstract\Actions;
 
-use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryFactory;
-use App\Services\Telegram\TelegramServiceFactory;
+use App\Telegram\Abstract\Traits\ReflectionAbleTrait;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use ReflectionException;
+use RuntimeException;
 use SergiX44\Nutgram\Nutgram;
 
 abstract class AbstractTelegramAction implements TelegramActionInterface
 {
+    use ReflectionAbleTrait;
+
     private array $params = [];
 
     public function __invoke(Nutgram $nutgram, ...$params): void
     {
         $this->setParameters($params);
 
-        $this->handle(
-            app(TelegramServiceFactory::class)->getFromNutgram($nutgram),
-            app(TelegramDataRepositoryFactory::class)->getFromNutgram($nutgram)
-        );
+        try {
+            $this->callStaticMethodWithArgs('handle', ['nutgram' => $nutgram]);
+        } catch (BindingResolutionException|ReflectionException $e) {
+            throw new RuntimeException(previous: $e);
+        }
     }
 
     private function setParameters(array $params): void

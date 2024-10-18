@@ -36,6 +36,8 @@ interface ChatMessageRepositoryInterface extends RepositoryInterface
 
     /**
      * Delete chat message from db
+     *
+     * @throws ChatMessageNotFoundException
      */
     public function delete(ChatMessageData $chatMessageData): bool;
 

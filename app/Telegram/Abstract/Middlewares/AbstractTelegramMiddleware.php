@@ -4,18 +4,22 @@ declare(strict_types=1);
 
 namespace App\Telegram\Abstract\Middlewares;
 
-use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryFactory;
-use App\Services\Telegram\TelegramServiceFactory;
+use App\Telegram\Abstract\Traits\ReflectionAbleTrait;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use ReflectionException;
+use RuntimeException;
 use SergiX44\Nutgram\Nutgram;
 
 abstract class AbstractTelegramMiddleware implements TelegramMiddlewareInterface
 {
-    public function __invoke(Nutgram $nutgram, $next): void
+    use ReflectionAbleTrait;
+
+    public function __invoke(Nutgram $nutgram, callable $next): void
     {
-        $this->handle(
-            app(TelegramServiceFactory::class)->getFromNutgram($nutgram),
-            app(TelegramDataRepositoryFactory::class)->getFromNutgram($nutgram),
-            fn () => $next($nutgram)
-        );
+        try {
+            $this->callStaticMethodWithArgs('handle', ['nutgram' => $nutgram, 'next' => fn () => $next($nutgram)]);
+        } catch (BindingResolutionException|ReflectionException $e) {
+            throw new RuntimeException(previous: $e);
+        }
     }
 }

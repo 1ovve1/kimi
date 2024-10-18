@@ -15,10 +15,11 @@ class TelegramServiceFactory implements ServiceFactoryInterface
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function get(): TelegramServiceInterface
+    public function get(array $params = []): TelegramServiceInterface
     {
         return app(NutgramTelegramService::class, [
             'nutgram' => new Nutgram(config('nutgram.token')),
+            ...$params,
         ]);
     }
 

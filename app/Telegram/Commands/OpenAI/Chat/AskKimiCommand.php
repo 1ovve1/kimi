@@ -13,18 +13,15 @@ class AskKimiCommand extends AbstractTelegramCommand
 
     protected ?string $description = 'ask Kimi about something';
 
-    public function onHandle(TelegramServiceInterface $telegramService, TelegramDataRepositoryInterface $telegramDataRepository): void
-    {
-        $chatGPTService = $this->getChatService();
+    public function onHandle(
+        OpenAIChatServiceInterface $openAiChatService,
+        TelegramServiceInterface $telegramService,
+        TelegramDataRepositoryInterface $telegramDataRepository
+    ): void {
         $message = $telegramDataRepository->getMessage();
 
-        $answer = $chatGPTService->answer($message);
+        $answer = $openAiChatService->answer($message);
 
         $telegramService->replyToMessage($answer->content, $message);
-    }
-
-    private function getChatService(): OpenAIChatServiceInterface
-    {
-        return app(OpenAIChatServiceInterface::class);
     }
 }

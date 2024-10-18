@@ -140,7 +140,11 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
 
         $this->nutgram->deleteMessage(chat_id: $chatData->target->tg_id, message_id: $chatMessageData->tg_id);
 
-        $this->chatMessageRepository->delete($chatMessageData);
+        try {
+            $this->chatMessageRepository->delete($chatMessageData);
+        } catch (ChatMessageNotFoundException $e) {
+            // do nothing
+        }
     }
 
     /**

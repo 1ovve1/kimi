@@ -4,20 +4,28 @@ declare(strict_types=1);
 
 namespace App\Telegram\Abstract\Keyboards\Buttons;
 
-use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryFactory;
-use App\Services\Telegram\Callback\CallbackServiceFactory;
-use App\Services\Telegram\TelegramServiceFactory;
+use App\Telegram\Abstract\Traits\ReflectionAbleTrait;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Str;
+use ReflectionException;
+use RuntimeException;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Types\Keyboard\InlineKeyboardButton;
 
 abstract class AbstractTelegramButton implements TelegramButtonInterface
 {
+    use ReflectionAbleTrait;
+
+    /**
+     * @throws ReflectionException
+     * @throws BindingResolutionException
+     */
     public function make(): InlineKeyboardButton
     {
         return InlineKeyboardButton::make(
-            text: $this->text(),
-            callback_data: $this->name(),
+            /** @link TelegramButtonInterface::text() */
+            text: $this->callStaticMethodWithArgs('text'),
+            callback_data: self::name(),
         );
     }
 
@@ -28,10 +36,10 @@ abstract class AbstractTelegramButton implements TelegramButtonInterface
 
     public function __invoke(Nutgram $nutgram): void
     {
-        $this->handle(
-            app(TelegramServiceFactory::class)->getFromNutgram($nutgram),
-            app(CallbackServiceFactory::class)->getFromNutgram($nutgram),
-            app(TelegramDataRepositoryFactory::class)->getFromNutgram($nutgram),
-        );
+        try {
+            $this->callStaticMethodWithArgs('handle', ['nutgram' => $nutgram]);
+        } catch (BindingResolutionException|ReflectionException $e) {
+            throw new RuntimeException(previous: $e);
+        }
     }
 }

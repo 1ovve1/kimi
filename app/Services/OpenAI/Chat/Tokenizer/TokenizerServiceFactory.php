@@ -9,10 +9,11 @@ use App\Services\OpenAI\Chat\Enums\ChatModelEnum;
 
 class TokenizerServiceFactory implements ServiceFactoryInterface
 {
-    public function get(): TokenizerServiceInterface
+    public function get(array $params = []): TokenizerServiceInterface
     {
         return app(TokenizerService::class, [
             'GPTModelsEnum' => ChatModelEnum::default(),
+            ...$params,
         ]);
     }
 }

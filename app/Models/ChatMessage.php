@@ -20,6 +20,7 @@ class ChatMessage extends Model
         'tg_id',
         'chat_user_id',
         'text',
+        'created_at',
     ];
 
     protected $casts = [

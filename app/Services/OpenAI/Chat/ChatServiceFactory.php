@@ -13,7 +13,7 @@ use OpenAI;
 
 class ChatServiceFactory implements ServiceFactoryInterface
 {
-    public function get(): ChatServiceInterface
+    public function get(array $params = []): ChatServiceInterface
     {
         return $this->getChatWithKimi();
     }
