@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Data\Telegram\Chat\ChatData;
 use App\Data\Telegram\Chat\ChatMessageData;
+use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageNotFoundException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,6 +22,7 @@ class ChatMessage extends Model
         'tg_id',
         'chat_user_id',
         'text',
+        'created_at',
     ];
 
     protected $casts = [
@@ -48,6 +51,18 @@ class ChatMessage extends Model
     public static function findForChatMessageData(ChatMessageData $chatMessageData): ChatMessage
     {
         return ChatMessage::whereId($chatMessageData->id)
+            ->first() ?? throw new ChatMessageNotFoundException($chatMessageData);
+    }
+
+    /**
+     * @throws ChatMessageNotFoundException
+     * @throws ChatNotFoundException
+     */
+    public static function findForChatMessageDataAndChatData(ChatMessageData $chatMessageData, ChatData $chatData): ChatMessage
+    {
+        return Chat::findForChatData($chatData)
+            ->messages()
+            ->where('tg_id', $chatMessageData->tg_id)
             ->first() ?? throw new ChatMessageNotFoundException($chatMessageData);
     }
 }

@@ -11,10 +11,8 @@ use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageNotFoundException;
 use App\Exceptions\Repositories\Telegram\User\UserNotFoundException;
 use App\Exceptions\Repositories\Telegram\User\UserNotFoundInGivenChatException;
-use App\Models\Chat;
 use App\Models\ChatMessage;
 use App\Models\ChatUser;
-use App\Models\User;
 use App\Repositories\Abstract\AbstractRepository;
 
 class ChatMessageRepository extends AbstractRepository implements ChatMessageRepositoryInterface
@@ -27,7 +25,7 @@ class ChatMessageRepository extends AbstractRepository implements ChatMessageRep
     public function save(ChatData $chatData, UserData $userData, ChatMessageData $chatMessageData): ChatMessageData
     {
         try {
-            return $this->find($chatMessageData);
+            return $this->findInChat($chatMessageData, $chatData);
         } catch (ChatMessageNotFoundException $e) {
             return $this->create($chatData, $userData, $chatMessageData);
         }
@@ -40,13 +38,7 @@ class ChatMessageRepository extends AbstractRepository implements ChatMessageRep
      */
     public function create(ChatData $chatData, UserData $userData, ChatMessageData $chatMessageData): ChatMessageData
     {
-        $chat = Chat::findForChatData($chatData);
-        $user = User::findForUserData($userData);
-
-        /** @var ChatUser $chatUser */
-        $chatUser = $chat->chat_users()
-            ->where('user_id', $user->id)
-            ->first() ?? throw new UserNotFoundInGivenChatException($chatData, $userData);
+        $chatUser = ChatUser::findFromChatDataAndUserData($chatData, $userData);
 
         $chatMessage = $chatUser->chat_messages()->save(new ChatMessage($chatMessageData->toArray()));
 
@@ -56,6 +48,13 @@ class ChatMessageRepository extends AbstractRepository implements ChatMessageRep
     public function find(ChatMessageData $chatMessageData): ChatMessageData
     {
         $chatMessage = ChatMessage::findForChatMessageData($chatMessageData);
+
+        return ChatMessageData::from($chatMessage);
+    }
+
+    public function findInChat(ChatMessageData $chatMessageData, ChatData $chatData): ChatMessageData
+    {
+        $chatMessage = ChatMessage::findForChatMessageDataAndChatData($chatMessageData, $chatData);
 
         return ChatMessageData::from($chatMessage);
     }
@@ -72,6 +71,6 @@ class ChatMessageRepository extends AbstractRepository implements ChatMessageRep
     {
         $chatMessage = ChatMessage::findForChatMessageData($chatMessageData);
 
-        return ChatData::from($chatMessage->chat_user->chat);
+        return ChatData::from($chatMessage->chat_user->chat->load('target'));
     }
 }

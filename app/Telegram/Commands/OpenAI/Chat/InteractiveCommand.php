@@ -6,7 +6,7 @@ namespace App\Telegram\Commands\OpenAI\Chat;
 
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
-use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
+use App\Services\Telegram\TelegramData\TelegramDataServiceInterface;
 use App\Services\Telegram\TelegramServiceInterface;
 use App\Telegram\Abstract\Commands\AbstractTelegramCommand;
 
@@ -19,10 +19,12 @@ class InteractiveCommand extends AbstractTelegramCommand
     /**
      * @throws ChatNotFoundException
      */
-    public function onHandle(TelegramServiceInterface $telegramService, TelegramDataRepositoryInterface $telegramDataRepository): void
-    {
-        $chatRepository = $this->getChatRepository();
-        $chat = $chatRepository->find($telegramDataRepository->getChat());
+    public function onHandle(
+        TelegramServiceInterface $telegramService,
+        TelegramDataServiceInterface $telegramDataService,
+        ChatRepositoryInterface $chatRepository,
+    ): void {
+        $chat = $telegramDataService->resolveChat();
 
         if ($chat->interactive_mode) {
             $chatRepository->setInteractiveMode($chat, false);
@@ -31,10 +33,5 @@ class InteractiveCommand extends AbstractTelegramCommand
             $chatRepository->setInteractiveMode($chat, true);
             $telegramService->sendMessage(__('telegram.commands.interactive.enabled'));
         }
-    }
-
-    private function getChatRepository(): ChatRepositoryInterface
-    {
-        return app(ChatRepositoryInterface::class);
     }
 }

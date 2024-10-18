@@ -7,6 +7,7 @@ namespace App\Repositories\Telegram\ChatMessage;
 use App\Data\Telegram\Chat\ChatData;
 use App\Data\Telegram\Chat\ChatMessageData;
 use App\Data\Telegram\UserData;
+use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageAlreadyExistsException;
 use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageNotFoundException;
 use App\Repositories\Abstract\RepositoryInterface;
@@ -30,12 +31,24 @@ interface ChatMessageRepositoryInterface extends RepositoryInterface
     public function create(ChatData $chatData, UserData $userData, ChatMessageData $chatMessageData): ChatMessageData;
 
     /**
+     * Find chat message by id
+     *
      * @throws ChatMessageNotFoundException
      */
     public function find(ChatMessageData $chatMessageData): ChatMessageData;
 
     /**
+     * Find chat message by tg_id in given chat
+     *
+     * @throws ChatMessageNotFoundException
+     * @throws ChatNotFoundException
+     */
+    public function findInChat(ChatMessageData $chatMessageData, ChatData $chatData): ChatMessageData;
+
+    /**
      * Delete chat message from db
+     *
+     * @throws ChatMessageNotFoundException
      */
     public function delete(ChatMessageData $chatMessageData): bool;
 

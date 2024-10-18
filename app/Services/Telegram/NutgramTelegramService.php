@@ -21,7 +21,7 @@ use SergiX44\Nutgram\Telegram\Properties\ParseMode;
 
 class NutgramTelegramService extends AbstractService implements TelegramServiceInterface
 {
-    const PARSE_MODE = ParseMode::MARKDOWN;
+    const PARSE_MODE = ParseMode::MARKDOWN_LEGACY;
 
     private readonly TelegramDataRepositoryInterface $telegramDataRepository;
 
@@ -65,6 +65,8 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
 
     public function replyToMessage(string $content, ?ChatMessageData $chatMessageData = null, ?ChatData $chatData = null): ChatMessageData
     {
+        dump($chatMessageData);
+
         try {
             $chatMessageData = $this->chatMessageRepository->find($chatMessageData ?? $this->telegramDataRepository->getMessage());
             $chatData ??= $this->chatMessageRepository->chat($chatMessageData);
@@ -76,6 +78,9 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
         if (self::PARSE_MODE === ParseMode::MARKDOWN) {
             $content = $this->escapeCharactersForMarkdown($content);
         }
+
+        dump($chatMessageData);
+        dump($chatData);
 
         $message = $this->nutgram
             ->sendMessage($content, chat_id: $chatData->target->tg_id, parse_mode: self::PARSE_MODE, reply_to_message_id: $chatMessageData->tg_id);
@@ -140,7 +145,11 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
 
         $this->nutgram->deleteMessage(chat_id: $chatData->target->tg_id, message_id: $chatMessageData->tg_id);
 
-        $this->chatMessageRepository->delete($chatMessageData);
+        try {
+            $this->chatMessageRepository->delete($chatMessageData);
+        } catch (ChatMessageNotFoundException $e) {
+            // do nothing
+        }
     }
 
     /**

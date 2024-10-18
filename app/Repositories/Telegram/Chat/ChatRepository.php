@@ -22,7 +22,6 @@ use App\Models\Group;
 use App\Models\Supergroup;
 use App\Models\User;
 use App\Repositories\Abstract\AbstractRepository;
-use Illuminate\Database\Eloquent\Builder;
 use RuntimeException;
 use SergiX44\Nutgram\Telegram\Properties\ChatType;
 

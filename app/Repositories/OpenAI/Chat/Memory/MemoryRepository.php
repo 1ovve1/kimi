@@ -7,7 +7,6 @@ namespace App\Repositories\OpenAI\Chat\Memory;
 use App\Data\OpenAI\Chat\DialogMessageData;
 use App\Data\Telegram\Chat\ChatData;
 use App\Data\Telegram\Chat\ChatMessageData;
-use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Models\Chat;
 use App\Models\ChatMessage;
 use App\Models\OpenaiChatMemory;
@@ -18,9 +17,6 @@ use Illuminate\Support\Collection;
 
 class MemoryRepository extends AbstractRepository implements MemoryRepositoryInterface
 {
-    /**
-     * @throws ChatNotFoundException
-     */
     public function getAllLatest(ChatData $chatData): Collection
     {
         $chat = Chat::findForChatData($chatData);
@@ -60,9 +56,6 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
         return $chatMessageData;
     }
 
-    /**
-     * @throws ChatNotFoundException
-     */
     public function deleteAll(ChatData $chatData): int
     {
         $chat = Chat::findForChatData($chatData);

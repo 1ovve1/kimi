@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\App;
 
 class MemoryServiceFactory implements ServiceFactoryInterface
 {
-    public function get(): MemoryServiceInterface
+    public function get(array $params = []): MemoryServiceInterface
     {
-        return App::make(CachedMemoryService::class);
+        return App::make(CachedMemoryService::class, $params);
     }
 }
