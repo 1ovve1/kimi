@@ -62,9 +62,7 @@ class ChatMessageRepository extends AbstractRepository implements ChatMessageRep
 
     public function findInChat(ChatMessageData $chatMessageData, ChatData $chatData): ChatMessageData
     {
-        $chat = Chat::findForChatData($chatData);
-
-        $chatMessage = $chat->messages()->where('tg_id', $chatMessageData->tg_id)->first();
+        $chatMessage = ChatMessage::findForChatMessageDataAndChatData($chatMessageData, $chatData);
 
         return ChatMessageData::from($chatMessage);
     }
