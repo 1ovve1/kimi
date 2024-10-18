@@ -38,6 +38,11 @@ class Chat extends Model
         return $this->hasManyThrough(User::class, ChatUser::class, 'chat_id', 'id', 'id', 'user_id');
     }
 
+    public function messages(): HasManyThrough
+    {
+        return $this->hasManyThrough(ChatMessage::class, ChatUser::class, 'chat_id', 'chat_user_id', 'id', 'id');
+    }
+
     /**
      * @return HasMany<ChatUser>
      */
