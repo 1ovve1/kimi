@@ -10,6 +10,7 @@ use App\Data\Telegram\UserData;
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageAlreadyExistsException;
 use App\Exceptions\Repositories\Telegram\TelegramData\ReplyWasNotFoundedException;
+use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
 use App\Exceptions\Repositories\Telegram\User\UserNotFoundException;
 
 /**
@@ -62,6 +63,7 @@ interface TelegramDataServiceInterface
     /**
      * @throws UserNotFoundException
      * @throws ChatNotFoundException
+     * @throws TelegramUserNotFoundException
      */
     public function resolveUser(): UserData;
 

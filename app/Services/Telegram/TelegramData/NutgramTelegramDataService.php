@@ -100,7 +100,7 @@ class NutgramTelegramDataService extends AbstractService implements TelegramData
         $chat = $this->resolveChat();
 
         $me = $this->userRepository->save(
-            $this->telegramDataRepository->getMe()
+            $this->telegramDataRepository->getUser()
         );
 
         return $this->chatRepository->appendUser($chat, $me);

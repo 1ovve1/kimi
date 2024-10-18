@@ -58,7 +58,7 @@ class ChatMessage extends Model
      * @throws ChatMessageNotFoundException
      * @throws ChatNotFoundException
      */
-    public function findForChatMessageDataAndChatData(ChatMessageData $chatMessageData, ChatData $chatData): ChatMessage
+    public static function findForChatMessageDataAndChatData(ChatMessageData $chatMessageData, ChatData $chatData): ChatMessage
     {
         return Chat::findForChatData($chatData)
             ->messages()

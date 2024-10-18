@@ -2,6 +2,11 @@
 
 namespace App\Models;
 
+use App\Data\Telegram\Chat\ChatData;
+use App\Data\Telegram\UserData;
+use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
+use App\Exceptions\Repositories\Telegram\User\UserNotFoundException;
+use App\Exceptions\Repositories\Telegram\User\UserNotFoundInGivenChatException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -41,5 +46,18 @@ class ChatUser extends Model
     public function chat_messages(): HasMany
     {
         return $this->hasMany(ChatMessage::class);
+    }
+
+    /**
+     * @throws ChatNotFoundException
+     * @throws UserNotFoundException
+     * @throws UserNotFoundInGivenChatException
+     */
+    public static function findFromChatDataAndUserData(ChatData $chatData, UserData $userData): ChatUser
+    {
+        return Chat::findForChatData($chatData)
+            ->chat_users()
+            ->where('user_id', User::findForUserData($userData)->id)
+            ->first() ?? throw new UserNotFoundInGivenChatException($chatData, $userData);
     }
 }

@@ -65,6 +65,8 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
 
     public function replyToMessage(string $content, ?ChatMessageData $chatMessageData = null, ?ChatData $chatData = null): ChatMessageData
     {
+        dump($chatMessageData);
+
         try {
             $chatMessageData = $this->chatMessageRepository->find($chatMessageData ?? $this->telegramDataRepository->getMessage());
             $chatData ??= $this->chatMessageRepository->chat($chatMessageData);
@@ -76,6 +78,9 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
         if (self::PARSE_MODE === ParseMode::MARKDOWN) {
             $content = $this->escapeCharactersForMarkdown($content);
         }
+
+        dump($chatMessageData);
+        dump($chatData);
 
         $message = $this->nutgram
             ->sendMessage($content, chat_id: $chatData->target->tg_id, parse_mode: self::PARSE_MODE, reply_to_message_id: $chatMessageData->tg_id);
