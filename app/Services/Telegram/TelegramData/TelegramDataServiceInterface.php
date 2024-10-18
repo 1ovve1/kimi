@@ -49,6 +49,8 @@ interface TelegramDataServiceInterface
      * @throws ChatMessageAlreadyExistsException
      * @throws ChatNotFoundException
      * @throws UserNotFoundException
+     * @throws ReplyWasNotFoundedException
+     * @throws TelegramUserNotFoundException
      */
     public function resolveMessage(): ChatMessageData;
 

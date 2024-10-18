@@ -10,9 +10,9 @@ use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageAlreadyExistsExc
 use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageNotFoundException;
 use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
 use App\Repositories\Telegram\ChatMessage\ChatMessageRepositoryInterface;
-use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryFactory;
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
 use App\Services\Abstract\AbstractService;
+use App\Services\Telegram\TelegramData\TelegramDataServiceInterface;
 use App\Telegram\Abstract\Keyboards\TelegramKeyboard;
 use App\Telegram\Abstract\Keyboards\TelegramKeyboardInterface;
 use Illuminate\Support\Stringable;
@@ -25,12 +25,15 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
 
     private readonly TelegramDataRepositoryInterface $telegramDataRepository;
 
+    private readonly TelegramDataServiceInterface $telegramDataService;
+
     private readonly ChatMessageRepositoryInterface $chatMessageRepository;
 
     public function __construct(
         readonly private Nutgram $nutgram,
     ) {
-        $this->telegramDataRepository = app(TelegramDataRepositoryFactory::class)->getFromNutgram($this->nutgram);
+        $this->telegramDataRepository = app(TelegramDataRepositoryInterface::class, ['nutgram' => $this->nutgram]);
+        $this->telegramDataService = app(TelegramDataServiceInterface::class, ['nutgram' => $this->nutgram]);
         $this->chatMessageRepository = app(ChatMessageRepositoryInterface::class);
     }
 
@@ -54,19 +57,19 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
      */
     public function sendMessageAndSave(string $content, ?ChatData $chatData = null): ChatMessageData
     {
+        $chatData ??= $this->telegramDataService->resolveChat();
+
         $chatMessage = $this->sendMessage($content, $chatData);
 
         return $this->chatMessageRepository->save(
             $chatData,
-            $this->telegramDataRepository->getUser(),
+            $this->telegramDataRepository->getMe(),
             $chatMessage
         );
     }
 
     public function replyToMessage(string $content, ?ChatMessageData $chatMessageData = null, ?ChatData $chatData = null): ChatMessageData
     {
-        dump($chatMessageData);
-
         try {
             $chatMessageData = $this->chatMessageRepository->find($chatMessageData ?? $this->telegramDataRepository->getMessage());
             $chatData ??= $this->chatMessageRepository->chat($chatMessageData);
@@ -79,9 +82,6 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
             $content = $this->escapeCharactersForMarkdown($content);
         }
 
-        dump($chatMessageData);
-        dump($chatData);
-
         $message = $this->nutgram
             ->sendMessage($content, chat_id: $chatData->target->tg_id, parse_mode: self::PARSE_MODE, reply_to_message_id: $chatMessageData->tg_id);
 
@@ -92,14 +92,17 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
      * @throws ChatMessageAlreadyExistsException
      * @throws TelegramUserNotFoundException
      */
-    public function replyToMessageAndSave(string $content, ?ChatMessageData $chatMessageData = null): ChatMessageData
+    public function replyToMessageAndSave(string $content, ?ChatMessageData $chatMessageData = null, ?ChatData $chatData = null): ChatMessageData
     {
-        $chatMessageData = $this->replyToMessage($content, $chatMessageData);
+        $chatMessageData ??= $this->telegramDataService->resolveMessage();
+
+        $reply = $this->replyToMessage($content, $chatMessageData);
 
         return $this->chatMessageRepository->save(
             $this->telegramDataRepository->getChat(),
-            $this->telegramDataRepository->getUser(),
-            $chatMessageData
+            $this->telegramDataRepository->getMe(),
+            $reply,
+            $chatMessageData,
         );
     }
 

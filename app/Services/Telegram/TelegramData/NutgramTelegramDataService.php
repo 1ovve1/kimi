@@ -10,6 +10,7 @@ use App\Data\Telegram\UserData;
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageAlreadyExistsException;
 use App\Exceptions\Repositories\Telegram\TelegramData\ReplyWasNotFoundedException;
+use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
 use App\Exceptions\Repositories\Telegram\User\UserNotFoundException;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
 use App\Repositories\Telegram\ChatMessage\ChatMessageRepositoryInterface;
@@ -62,7 +63,7 @@ class NutgramTelegramDataService extends AbstractService implements TelegramData
                 $replyMessage = $this->resolveReplyMessage();
                 $this->memoryService->memorize($replyMessage);
             }
-        } catch (UserNotFoundException|ChatMessageAlreadyExistsException|ChatNotFoundException|ReplyWasNotFoundedException $e) {
+        } catch (UserNotFoundException|ChatMessageAlreadyExistsException|ChatNotFoundException|ReplyWasNotFoundedException|TelegramUserNotFoundException $e) {
         }
     }
 
@@ -143,6 +144,12 @@ class NutgramTelegramDataService extends AbstractService implements TelegramData
         $user = $this->resolveUser();
         $message = $this->telegramDataRepository->getMessage();
 
-        return $this->chatMessageRepository->save($chat, $user, $message);
+        try {
+            $reply = $this->resolveReplyMessage();
+        } catch (ChatMessageAlreadyExistsException|ChatNotFoundException|ReplyWasNotFoundedException|UserNotFoundException $e) {
+            $reply = null;
+        }
+
+        return $this->chatMessageRepository->save($chat, $user, $message, $reply);
     }
 }

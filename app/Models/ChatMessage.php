@@ -21,6 +21,7 @@ class ChatMessage extends Model
     protected $fillable = [
         'tg_id',
         'chat_user_id',
+        'reply_id',
         'text',
         'created_at',
     ];
@@ -43,6 +44,14 @@ class ChatMessage extends Model
     public function chat_gpt_memory(): HasOne
     {
         return $this->hasOne(OpenaiChatMemory::class);
+    }
+
+    /**
+     * @return BelongsTo<ChatMessage>
+     */
+    public function reply(): BelongsTo
+    {
+        return $this->belongsTo(ChatMessage::class);
     }
 
     /**
