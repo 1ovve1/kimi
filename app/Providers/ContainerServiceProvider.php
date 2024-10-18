@@ -12,6 +12,7 @@ use App\Services\Abstract\ServiceFactoryInterface;
 use App\Services\OpenAI\Chat\ChatServiceInterface as OpenAIChatServiceInterface;
 use App\Services\OpenAI\Chat\Memory\MemoryServiceInterface as OpenAIChatMemoryServiceInterface;
 use App\Services\OpenAI\Chat\Tokenizer\TokenizerServiceInterface as OpenAIChatTokenizerServiceInterface;
+use App\Services\Telegram\Callback\CallbackServiceInterface as TelegramCallbackServiceInterface;
 use App\Services\Telegram\TelegramData\TelegramDataServiceInterface;
 use App\Services\Telegram\TelegramServiceInterface;
 use Illuminate\Support\ServiceProvider;
@@ -29,6 +30,7 @@ class ContainerServiceProvider extends ServiceProvider
             OpenAIChatMemoryServiceInterface::class,
             OpenAIChatTokenizerServiceInterface::class,
             TelegramDataServiceInterface::class,
+            TelegramCallbackServiceInterface::class,
         ]);
 
         $this->bindManyRepositories([
