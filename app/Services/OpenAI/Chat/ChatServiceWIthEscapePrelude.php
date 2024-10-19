@@ -16,7 +16,7 @@ class ChatServiceWIthEscapePrelude extends ChatService implements ChatServiceInt
         $answer = parent::answer($chatMessageData);
 
         return new DialogMessageData(
-            preg_replace('/^\[.*#\d+: /m', '', $answer->content),
+            $this->escapePrelude($answer->content),
             DialogRolesEnum::from($answer->role),
         );
     }
@@ -26,8 +26,17 @@ class ChatServiceWIthEscapePrelude extends ChatService implements ChatServiceInt
         $answer = parent::interactiveAnswer($chatData);
 
         return new DialogMessageData(
-            preg_replace('/^\[.*#\d+: /m', '', $answer->content),
+            $this->escapePrelude($answer->content),
             DialogRolesEnum::from($answer->role),
+        );
+    }
+
+    private function escapePrelude(string $content): string
+    {
+        return preg_replace(
+            '/^.*from \'.*\': /m',
+            '',
+            preg_replace('/^.*#\d+: /m', '', $content)
         );
     }
 }
