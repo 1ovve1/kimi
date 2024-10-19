@@ -31,7 +31,7 @@ class ChatServiceFactory implements ServiceFactoryInterface
             ->withApiKey(config('gpt.key'))
             ->make();
 
-        return App::make(ChatService::class, [
+        return App::make(ChatServiceWIthEscapePrelude::class, [
             'client' => $client->chat(),
             'character' => $character,
         ]);

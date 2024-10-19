@@ -27,7 +27,7 @@ interface TelegramServiceInterface
      * @throws ChatMessageAlreadyExistsException
      * @throws TelegramUserNotFoundException
      */
-    public function replyToMessageAndSave(string $content, ?ChatMessageData $chatMessageData = null): ChatMessageData;
+    public function replyToMessageAndSave(string $content, ?ChatMessageData $chatMessageData = null, ?ChatData $chatData = null): ChatMessageData;
 
     public function sendMessageWithKeyboard(string $content, TelegramKeyboardInterface $telegramKeyboard, ?ChatData $chatData = null): ChatMessageData;
 

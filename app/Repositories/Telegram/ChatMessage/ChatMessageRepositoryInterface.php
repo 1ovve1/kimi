@@ -19,7 +19,7 @@ interface ChatMessageRepositoryInterface extends RepositoryInterface
      *
      * @throws ChatMessageAlreadyExistsException
      */
-    public function save(ChatData $chatData, UserData $userData, ChatMessageData $chatMessageData): ChatMessageData;
+    public function save(ChatData $chatData, UserData $userData, ChatMessageData $chatMessageData, ?ChatMessageData $replyData = null): ChatMessageData;
 
     /**
      * Store new chat message data in db
@@ -28,7 +28,7 @@ interface ChatMessageRepositoryInterface extends RepositoryInterface
      * @param  UserData  $userData  - user that send message
      * @param  ChatMessageData  $chatMessageData  - message id and content
      */
-    public function create(ChatData $chatData, UserData $userData, ChatMessageData $chatMessageData): ChatMessageData;
+    public function create(ChatData $chatData, UserData $userData, ChatMessageData $chatMessageData, ?ChatMessageData $replyData = null): ChatMessageData;
 
     /**
      * Find chat message by id

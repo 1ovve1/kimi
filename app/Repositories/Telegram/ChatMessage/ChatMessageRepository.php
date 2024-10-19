@@ -22,12 +22,12 @@ class ChatMessageRepository extends AbstractRepository implements ChatMessageRep
      * @throws UserNotFoundException
      * @throws ChatNotFoundException
      */
-    public function save(ChatData $chatData, UserData $userData, ChatMessageData $chatMessageData): ChatMessageData
+    public function save(ChatData $chatData, UserData $userData, ChatMessageData $chatMessageData, ?ChatMessageData $replyData = null): ChatMessageData
     {
         try {
             return $this->findInChat($chatMessageData, $chatData);
         } catch (ChatMessageNotFoundException $e) {
-            return $this->create($chatData, $userData, $chatMessageData);
+            return $this->create($chatData, $userData, $chatMessageData, $replyData);
         }
     }
 
@@ -36,11 +36,11 @@ class ChatMessageRepository extends AbstractRepository implements ChatMessageRep
      * @throws ChatNotFoundException
      * @throws UserNotFoundInGivenChatException
      */
-    public function create(ChatData $chatData, UserData $userData, ChatMessageData $chatMessageData): ChatMessageData
+    public function create(ChatData $chatData, UserData $userData, ChatMessageData $chatMessageData, ?ChatMessageData $replyData = null): ChatMessageData
     {
         $chatUser = ChatUser::findFromChatDataAndUserData($chatData, $userData);
 
-        $chatMessage = $chatUser->chat_messages()->save(new ChatMessage($chatMessageData->toArray()));
+        $chatMessage = $chatUser->chat_messages()->save(new ChatMessage([...$chatMessageData->toArray(), 'reply_id' => $replyData?->id]));
 
         return ChatMessageData::from($chatMessage);
     }
