@@ -17,6 +17,8 @@ use Illuminate\Support\Collection;
 
 class MemoryRepository extends AbstractRepository implements MemoryRepositoryInterface
 {
+    const MESSAGE_FORMAT = "[%s] #%s %s: %s";
+
     public function getAllLatest(ChatData $chatData): Collection
     {
         $chat = Chat::findForChatData($chatData);
@@ -33,7 +35,15 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
             // full name of user
             $fullNane = trim("{$user->first_name} {$user->last_name}");
             // formatted message content for the gpt
-            $content = "{$fullNane}: {$message->text}";
+
+            $content = sprintf(
+                self::MESSAGE_FORMAT,
+                $message->created_at->format("Y-m-d H:i:s"),
+                $message->id,
+                $message->reply_id ? "'{$fullNane}' reply to #{$message->reply_id}": "from '$fullNane'",
+                $message->text
+            );
+
             // cached tokens count value
             $tokens_count = $message->chat_gpt_memory->tokens_count;
             // resolve role
