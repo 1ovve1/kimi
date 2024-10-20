@@ -5,12 +5,9 @@
 use App\Telegram\Actions\KimiReplyHandler;
 use App\Telegram\Actions\OpenAI\ChatGPT\AskKimiAction;
 use App\Telegram\Commands\OpenAI\Chat\AskKimiCommand;
-use App\Telegram\Commands\OpenAI\Chat\InteractiveCommand;
-use App\Telegram\Commands\OpenAI\Chat\ResetCommand;
 use App\Telegram\Commands\StartTelegramCommand;
 use App\Telegram\Keyboards\Buttons\InteractiveButton;
 use App\Telegram\Keyboards\Buttons\ResetButton;
-use App\Telegram\Middlewares\AutoDeleteMessagesMiddleware;
 use App\Telegram\Middlewares\StoreTelegramRequestInDatabaseMiddleware;
 use SergiX44\Nutgram\Nutgram;
 
@@ -26,11 +23,6 @@ use SergiX44\Nutgram\Nutgram;
 
 $bot->registerCommand(StartTelegramCommand::class);
 $bot->registerCommand(AskKimiCommand::class);
-
-$bot->group(function (Nutgram $bot) {
-    $bot->registerCommand(ResetCommand::class);
-    $bot->registerCommand(InteractiveCommand::class);
-})->middleware(AutoDeleteMessagesMiddleware::class);
 
 $bot->group(function (Nutgram $bot) {
     $bot->onMessage(KimiReplyHandler::class);

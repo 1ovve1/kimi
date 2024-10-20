@@ -6,8 +6,10 @@ namespace App\Repositories\Telegram\TelegramData;
 
 use App\Data\Telegram\Chat\ChatData;
 use App\Data\Telegram\Chat\ChatMessageData;
+use App\Data\Telegram\Chat\ChatUserData;
 use App\Data\Telegram\UserData;
 use App\Exceptions\Repositories\Telegram\TelegramData\ReplyWasNotFoundedException;
+use App\Exceptions\Repositories\Telegram\TelegramData\TelegramChatUserWasNotFounded;
 use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
 use App\Repositories\Abstract\RepositoryInterface;
 
@@ -48,4 +50,18 @@ interface TelegramDataRepositoryInterface extends RepositoryInterface
      * @throws ReplyWasNotFoundedException
      */
     public function getUserReply(): UserData;
+
+    /**
+     * Resolve chat user data for user
+     *
+     * @throws TelegramChatUserWasNotFounded
+     */
+    public function getChatUser(): ChatUserData;
+
+    /**
+     * Resolve chat user for bot
+     *
+     * @throws TelegramChatUserWasNotFounded
+     */
+    public function getChatUserMe(): ChatUserData;
 }
