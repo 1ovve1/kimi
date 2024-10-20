@@ -10,6 +10,7 @@ use App\Data\Telegram\UserData;
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageAlreadyExistsException;
 use App\Exceptions\Repositories\Telegram\TelegramData\ReplyWasNotFoundedException;
+use App\Exceptions\Repositories\Telegram\TelegramData\TelegramChatUserWasNotFounded;
 use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
 use App\Exceptions\Repositories\Telegram\User\UserNotFoundException;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
@@ -100,11 +101,17 @@ class NutgramTelegramDataService extends AbstractService implements TelegramData
     {
         $chat = $this->resolveChat();
 
-        $me = $this->userRepository->save(
+        $user = $this->userRepository->save(
             $this->telegramDataRepository->getUser()
         );
 
-        return $this->chatRepository->appendUser($chat, $me);
+        try {
+            $chatUser = $this->telegramDataRepository->getChatUser();
+        } catch (TelegramChatUserWasNotFounded $e) {
+            $chatUser = null;
+        }
+
+        return $this->chatRepository->appendUser($chat, $user, $chatUser);
     }
 
     public function resolveMe(): UserData
@@ -115,7 +122,13 @@ class NutgramTelegramDataService extends AbstractService implements TelegramData
             $this->telegramDataRepository->getMe()
         );
 
-        return $this->chatRepository->appendUser($chat, $me);
+        try {
+            $chatUserMe = $this->telegramDataRepository->getChatUserMe();
+        } catch (TelegramChatUserWasNotFounded $e) {
+            $chatUserMe = null;
+        }
+
+        return $this->chatRepository->appendUser($chat, $me, $chatUserMe);
     }
 
     public function resolveUserReply(): UserData

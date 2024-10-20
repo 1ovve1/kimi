@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Telegram\Keyboards\Buttons;
 
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
+use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
+use App\Exceptions\Repositories\Telegram\User\UserNotFoundException;
 use App\Repositories\OpenAI\Chat\Memory\MemoryRepositoryInterface;
-use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
+use App\Repositories\Telegram\User\UserRepositoryInterface;
 use App\Services\OpenAI\Chat\Memory\MemoryServiceInterface;
 use App\Services\Telegram\Callback\CallbackServiceInterface;
 use App\Services\Telegram\TelegramData\TelegramDataServiceInterface;
@@ -16,18 +18,31 @@ use App\Telegram\Keyboards\StartKeyboardFactory;
 
 class ResetButton extends AbstractTelegramButton
 {
+    /**
+     * @throws UserNotFoundException
+     * @throws TelegramUserNotFoundException
+     * @throws ChatNotFoundException
+     */
     public function handle(
         TelegramServiceInterface $telegramService,
         CallbackServiceInterface $callbackService,
-        TelegramDataRepositoryInterface $telegramDataRepository
+        TelegramDataServiceInterface $telegramDataService,
+        MemoryServiceInterface $memoryService,
+        UserRepositoryInterface $userRepository,
     ): void {
-        $memoryService = app(MemoryServiceInterface::class);
+        $chat = $telegramDataService->resolveChat();
+        $user = $telegramDataService->resolveUser();
 
-        $count = $memoryService->reset($telegramDataRepository->getChat());
+        if ($userRepository->isAdmin($chat, $user)) {
+            $count = $memoryService->reset($chat);
+            $callbackService->answerCallback(__('telegram.commands.reset.info', ['count' => $count]));
 
-        $callbackService->answerCallback(__('telegram.commands.reset.info', ['count' => $count]));
-
-        $telegramService->updateKeyboard((new StartKeyboardFactory)->get());
+            if ($count > 0) {
+                $telegramService->updateKeyboard((new StartKeyboardFactory)->get());
+            }
+        } else {
+            $callbackService->answerCallback(__('telegram.commands.reset.permissions_denied'));
+        }
     }
 
     /**

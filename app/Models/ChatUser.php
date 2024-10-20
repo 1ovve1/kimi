@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use SergiX44\Nutgram\Telegram\Properties\ChatMemberStatus;
 
 /**
  * User => Chat map relation
@@ -22,6 +23,11 @@ class ChatUser extends Model
     protected $fillable = [
         'chat_id',
         'user_id',
+        'status',
+    ];
+
+    protected $casts = [
+        'status' => ChatMemberStatus::class,
     ];
 
     /**

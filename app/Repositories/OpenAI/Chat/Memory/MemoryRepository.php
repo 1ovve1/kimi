@@ -17,7 +17,7 @@ use Illuminate\Support\Collection;
 
 class MemoryRepository extends AbstractRepository implements MemoryRepositoryInterface
 {
-    const MESSAGE_FORMAT = "[%s] #%s %s: %s";
+    const MESSAGE_FORMAT = '[%s] #%s %s: %s';
 
     public function getAllLatest(ChatData $chatData): Collection
     {
@@ -38,9 +38,9 @@ class MemoryRepository extends AbstractRepository implements MemoryRepositoryInt
 
             $content = sprintf(
                 self::MESSAGE_FORMAT,
-                $message->created_at->format("Y-m-d H:i:s"),
+                $message->created_at->format('Y-m-d H:i:s'),
                 $message->id,
-                $message->reply_id ? "'{$fullNane}' reply to #{$message->reply_id}": "from '$fullNane'",
+                $message->reply_id ? "'{$fullNane}' reply to #{$message->reply_id}" : "from '$fullNane'",
                 $message->text
             );
 

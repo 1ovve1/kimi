@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repositories\Telegram\Chat;
 
 use App\Data\Telegram\Chat\ChatData;
+use App\Data\Telegram\Chat\ChatUserData;
 use App\Data\Telegram\Chat\Types\ChannelData;
 use App\Data\Telegram\Chat\Types\GroupData;
 use App\Data\Telegram\Chat\Types\PrivateData;
@@ -98,7 +99,7 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
         return ChannelData::from($channel);
     }
 
-    public function appendUser(ChatData $chatData, UserData $userData): UserData
+    public function appendUser(ChatData $chatData, UserData $userData, ?ChatUserData $chatUserData = null): UserData
     {
         $chat = Chat::findForChatData($chatData);
         $user = User::findForUserData($userData);
@@ -108,7 +109,12 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
             ->first();
 
         if ($chatUser === null) {
-            $chat->chat_users()->save(new ChatUser(['user_id' => $user->id]));
+            /** @var ChatUser $chatUser */
+            $chatUser = $chat->chat_users()->save(new ChatUser(['user_id' => $user->id]));
+        }
+
+        if ($chatUserData) {
+            $chatUser->update(['status' => $chatUserData->status]);
         }
 
         return $userData;
