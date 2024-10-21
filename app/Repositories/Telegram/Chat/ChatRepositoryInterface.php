@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories\Telegram\Chat;
 
+use App\Data\OpenAI\Chat\CharacterData;
 use App\Data\Telegram\Chat\ChatData;
 use App\Data\Telegram\Chat\ChatUserData;
 use App\Data\Telegram\Chat\Types\ChannelData;
@@ -13,6 +14,7 @@ use App\Data\Telegram\Chat\Types\SupergroupData;
 use App\Data\Telegram\UserData;
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Exceptions\Repositories\Telegram\User\UserNotFoundException;
+use App\Exceptions\Repository\OpenAI\Character\CharacterNotFoundException;
 use App\Repositories\Abstract\RepositoryInterface;
 
 interface ChatRepositoryInterface extends RepositoryInterface
@@ -46,4 +48,10 @@ interface ChatRepositoryInterface extends RepositoryInterface
      * @throws ChatNotFoundException
      */
     public function find(ChatData $chatData): ChatData;
+
+    /**
+     * @throws ChatNotFoundException
+     * @throws CharacterNotFoundException
+     */
+    public function setCharacter(ChatData $chatData, CharacterData $characterData): ChatData;
 }

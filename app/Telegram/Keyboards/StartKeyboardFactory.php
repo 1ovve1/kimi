@@ -8,16 +8,17 @@ use App\Telegram\Abstract\Keyboards\TelegramKeyboard;
 use App\Telegram\Abstract\Keyboards\TelegramKeyboardInterface;
 use App\Telegram\Keyboards\Buttons\InteractiveButton;
 use App\Telegram\Keyboards\Buttons\ResetButton;
+use App\Telegram\Keyboards\Buttons\SelectCharacterButton;
 
 class StartKeyboardFactory
 {
     public function get(): TelegramKeyboardInterface
     {
         return (new TelegramKeyboard)
-            ->addRow(
+            ->addColumn(
                 new InteractiveButton,
-            )->addRow(
                 new ResetButton,
+                new SelectCharacterButton,
             );
     }
 }

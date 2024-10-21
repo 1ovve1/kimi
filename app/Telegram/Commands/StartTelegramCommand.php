@@ -7,6 +7,8 @@ use App\Services\Telegram\TelegramData\TelegramDataServiceInterface;
 use App\Services\Telegram\TelegramServiceInterface;
 use App\Telegram\Abstract\Commands\AbstractTelegramCommand;
 use App\Telegram\Keyboards\StartKeyboardFactory;
+use Illuminate\Support\Facades\Cache;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class StartTelegramCommand extends AbstractTelegramCommand
 {
@@ -14,17 +16,21 @@ class StartTelegramCommand extends AbstractTelegramCommand
 
     protected ?string $description = 'start kimi';
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function onHandle(
         ChatServiceInterface $openAiChatService,
         TelegramServiceInterface $telegramService,
         TelegramDataServiceInterface $telegramDataService
     ): void {
+        $chat = $telegramDataService->resolveChat();
+
         $telegramDataService->storeChatAndUsersInDb();
 
-        $startKeyboardFactory = new StartKeyboardFactory;
+        $greetings = Cache::get('chat.' . $chat->id . '.greetings', fn() => $openAiChatService->dryAnswer(__('openai.chat.prompts.greetings')));
+        Cache::set('chat.' . $chat->id . '.greetings', $greetings);
 
-        $greetings = $openAiChatService->dryAnswer(__('openai.chat.characters.kimi.greetings'));
-
-        $telegramService->sendMessageWithKeyboard($greetings->content, $startKeyboardFactory->get());
+        $telegramService->sendMessageWithKeyboard($greetings->content, (new StartKeyboardFactory)->get());
     }
 }

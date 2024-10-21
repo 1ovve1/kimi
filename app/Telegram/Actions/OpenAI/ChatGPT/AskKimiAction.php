@@ -6,6 +6,7 @@ namespace App\Telegram\Actions\OpenAI\ChatGPT;
 
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageAlreadyExistsException;
+use App\Exceptions\Repositories\Telegram\TelegramData\ReplyWasNotFoundedException;
 use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
 use App\Exceptions\Repositories\Telegram\User\UserNotFoundException;
 use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
@@ -21,6 +22,7 @@ class AskKimiAction extends AbstractTelegramAction
      * @throws TelegramUserNotFoundException
      * @throws ChatNotFoundException
      * @throws UserNotFoundException
+     * @throws ReplyWasNotFoundedException
      */
     public function handle(
         OpenAIChatServiceInterface $chatService,
@@ -39,7 +41,7 @@ class AskKimiAction extends AbstractTelegramAction
         } else {
             $chatMessage = $telegramDataRepository->getMessage();
 
-            $answer = $chatService->answer($chatMessage);
+            $answer = $chatService->answer($chat, $chatMessage);
 
             $telegramService->replyToMessage($answer->content, $chatMessage);
         }

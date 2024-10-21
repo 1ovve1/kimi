@@ -5,9 +5,10 @@
 use App\Telegram\Actions\KimiReplyHandler;
 use App\Telegram\Actions\OpenAI\ChatGPT\AskKimiAction;
 use App\Telegram\Commands\OpenAI\Chat\AskKimiCommand;
+use App\Telegram\Commands\OpenAI\Chat\DanKimiCommand;
 use App\Telegram\Commands\StartTelegramCommand;
-use App\Telegram\Keyboards\Buttons\InteractiveButton;
-use App\Telegram\Keyboards\Buttons\ResetButton;
+use App\Telegram\Keyboards\CharacterListKeyboardFactory;
+use App\Telegram\Keyboards\StartKeyboardFactory;
 use App\Telegram\Middlewares\StoreTelegramRequestInDatabaseMiddleware;
 use SergiX44\Nutgram\Nutgram;
 
@@ -23,6 +24,7 @@ use SergiX44\Nutgram\Nutgram;
 
 $bot->registerCommand(StartTelegramCommand::class);
 $bot->registerCommand(AskKimiCommand::class);
+$bot->registerCommand(DanKimiCommand::class);
 
 $bot->group(function (Nutgram $bot) {
     $bot->onMessage(KimiReplyHandler::class);
@@ -30,5 +32,6 @@ $bot->group(function (Nutgram $bot) {
     $bot->onText('(.*)(kimi|KIMI|Kimi|Кими|кими|КИМИ)!(.*)', AskKimiAction::class);
 })->middleware(StoreTelegramRequestInDatabaseMiddleware::class);
 
-$bot->onCallbackQueryData(InteractiveButton::name(), InteractiveButton::class);
-$bot->onCallbackQueryData(ResetButton::name(), ResetButton::class);
+(new StartKeyboardFactory())->get()->listen($bot);
+(new CharacterListKeyboardFactory())->get()->listen($bot);
+

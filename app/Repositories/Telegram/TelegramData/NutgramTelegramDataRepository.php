@@ -20,7 +20,7 @@ class NutgramTelegramDataRepository extends AbstractRepository implements Telegr
         private readonly Nutgram $nutgram
     ) {
         if (config('app.debug')) {
-            Log::debug('new message', $this->nutgram->message()->toArray());
+            Log::debug('new message', $this->nutgram->message()?->toArray());
         }
     }
 

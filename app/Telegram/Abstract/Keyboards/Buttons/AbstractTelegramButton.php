@@ -25,7 +25,7 @@ abstract class AbstractTelegramButton implements TelegramButtonInterface
         return InlineKeyboardButton::make(
             /** @link TelegramButtonInterface::text() */
             text: $this->callStaticMethodWithArgs('text'),
-            callback_data: self::name(),
+            callback_data: static::name(),
         );
     }
 

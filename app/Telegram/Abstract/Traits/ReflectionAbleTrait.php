@@ -34,6 +34,6 @@ trait ReflectionAbleTrait
             }
         }
 
-        return $reflectionMethod->invokeArgs(new static, $instances);
+        return $reflectionMethod->invokeArgs($this, $instances);
     }
 }

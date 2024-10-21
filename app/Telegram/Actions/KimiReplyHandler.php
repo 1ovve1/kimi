@@ -49,7 +49,7 @@ class KimiReplyHandler extends AbstractTelegramAction
                 if ($userReply->is_bot) {
                     $chatMessageData = $telegramDataRepository->getMessage();
 
-                    $answer = $chatService->answer($chatMessageData);
+                    $answer = $chatService->answer($chatData, $chatMessageData);
 
                     $telegramService->replyToMessage($answer->content, $chatMessageData);
                 }

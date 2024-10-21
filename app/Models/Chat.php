@@ -7,6 +7,7 @@ use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -19,6 +20,7 @@ class Chat extends Model
         'tg_id',
         'target_type',
         'target_id',
+        'character_id',
         'interactive_mode',
     ];
 
@@ -52,11 +54,20 @@ class Chat extends Model
     }
 
     /**
+     * @return BelongsTo<Character>
+     */
+    public function character(): BelongsTo
+    {
+        return $this->belongsTo(Character::class);
+    }
+
+    /**
      * @throws ChatNotFoundException
      */
     public static function findForChatData(ChatData $chatData): Chat
     {
-        return Chat::whereId($chatData->id)
+        return Chat::with('target')
+            ->whereId($chatData->id)
             ->orWhereHas('target', fn (Builder $builder) => $builder->where('tg_id', $chatData->target->tg_id))
             ->with('target')
             ->first() ?? throw new ChatNotFoundException($chatData);
