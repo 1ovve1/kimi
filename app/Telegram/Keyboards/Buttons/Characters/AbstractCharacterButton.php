@@ -6,9 +6,13 @@ namespace App\Telegram\Keyboards\Buttons\Characters;
 
 use App\Enums\Models\CharacterEnum;
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
+use App\Exceptions\Repositories\Telegram\TelegramData\TelegramUserNotFoundException;
+use App\Exceptions\Repositories\Telegram\User\UserNotFoundException;
 use App\Exceptions\Repository\OpenAI\Character\CharacterNotFoundException;
 use App\Repositories\OpenAI\Chat\Character\CharacterRepositoryInterface;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
+use App\Repositories\Telegram\User\UserRepositoryInterface;
+use App\Services\Telegram\Callback\CallbackServiceInterface;
 use App\Services\Telegram\TelegramData\TelegramDataServiceInterface;
 use App\Services\Telegram\TelegramServiceInterface;
 use App\Telegram\Abstract\Keyboards\Buttons\AbstractTelegramButton;
@@ -21,21 +25,34 @@ abstract class AbstractCharacterButton extends AbstractTelegramButton
     ) {}
 
     /**
-     * @throws ChatNotFoundException
      * @throws CharacterNotFoundException
+     * @throws ChatNotFoundException
+     * @throws TelegramUserNotFoundException
+     * @throws UserNotFoundException
      */
     public function handle(
         TelegramServiceInterface $telegramService,
         TelegramDataServiceInterface $telegramDataService,
+        CallbackServiceInterface $callbackService,
         CharacterRepositoryInterface $characterRepository,
-        ChatRepositoryInterface $chatRepository
+        ChatRepositoryInterface $chatRepository,
+        UserRepositoryInterface $userRepository
     ): void {
         $chat = $telegramDataService->resolveChat();
-        $character = $characterRepository->findByEnum($this->characterEnum);
+        $user = $telegramDataService->resolveUser();
 
-        if ($characterRepository->findForChat($chat)->name !== $character->name) {
-            $chatRepository->setCharacter($chat, $character);
-            $telegramService->updateKeyboard((new StartKeyboardFactory)->get());
+        if ($userRepository->isAdmin($chat, $user)) {
+            $character = $characterRepository->findByEnum($this->characterEnum);
+
+            if ($characterRepository->findForChat($chat)->name !== $character->name) {
+                $chatRepository->setCharacter($chat, $character);
+
+                $callbackService->answerCallback(__('telegram.keyboards.buttons.select_character.success', ['name' => $this->characterEnum->value]));
+
+                $telegramService->updateKeyboard((new StartKeyboardFactory)->get());
+            }
+        } else {
+            $callbackService->answerCallback(__('telegram.keyboards.buttons.default.permissions_denied'));
         }
 
     }
