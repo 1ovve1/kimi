@@ -7,7 +7,6 @@ namespace App\Repositories\OpenAI\Chat\Character;
 use App\Data\OpenAI\Chat\CharacterData;
 use App\Data\Telegram\Chat\ChatData;
 use App\Enums\Models\CharacterEnum;
-use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Exceptions\Repository\OpenAI\Character\CharacterNotFoundException;
 use App\Models\Character;
 use App\Models\Chat;

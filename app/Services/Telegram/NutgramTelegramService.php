@@ -53,7 +53,6 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
 
     /**
      * @throws ChatMessageAlreadyExistsException
-     * @throws TelegramUserNotFoundException
      */
     public function sendMessageAndSave(string $content, ?ChatData $chatData = null): ChatMessageData
     {

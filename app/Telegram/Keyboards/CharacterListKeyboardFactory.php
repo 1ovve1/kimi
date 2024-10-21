@@ -18,7 +18,7 @@ class CharacterListKeyboardFactory
             ->addColumn(
                 new DefaultCharacterButton,
                 new KimiCharacterButton,
-                new BackToButton((new StartKeyboardFactory())->get()),
+                new BackToButton((new StartKeyboardFactory)->get()),
             );
     }
 }

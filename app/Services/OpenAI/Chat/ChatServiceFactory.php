@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services\OpenAI\Chat;
 
-use App\Repositories\OpenAI\Chat\Character\CharacterRepositoryInterface;
 use App\Services\Abstract\ServiceFactoryInterface;
 use App\Services\OpenAI\Chat\Characters\CharacterBuilderFactory;
 use App\Services\OpenAI\Chat\Enums\ChatModelEnum;
@@ -19,9 +18,9 @@ class ChatServiceFactory implements ServiceFactoryInterface
             ->withApiKey(config('gpt.key'))
             ->make();
 
-        return App::make(ChatService::class, [
+        return App::make(ChatServiceWIthEscapePrelude::class, [
             'client' => $client->chat(),
-            'characterBuilderFactory' => new CharacterBuilderFactory(ChatModelEnum::default())
+            'characterBuilderFactory' => new CharacterBuilderFactory(ChatModelEnum::default()),
         ]);
     }
 }

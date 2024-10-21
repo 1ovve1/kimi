@@ -7,10 +7,9 @@ namespace App\Repositories\OpenAI\Chat\Character;
 use App\Repositories\Abstract\RepositoryFactoryInterface;
 use Illuminate\Support\Facades\App;
 
-
 class CharacterRepositoryFactory implements RepositoryFactoryInterface
 {
-    function get(): CharacterRepositoryInterface
+    public function get(): CharacterRepositoryInterface
     {
         return App::make(CharacterRepository::class);
     }

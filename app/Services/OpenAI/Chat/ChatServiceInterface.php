@@ -8,7 +8,6 @@ use App\Data\OpenAI\Chat\DialogMessageData;
 use App\Data\Telegram\Chat\ChatData;
 use App\Data\Telegram\Chat\ChatMessageData;
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
-use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageNotFoundException;
 
 interface ChatServiceInterface
 {

@@ -6,7 +6,6 @@ namespace App\Services\OpenAI\Chat\Characters;
 
 use App\Data\OpenAI\Chat\CharacterData;
 use App\Data\OpenAI\Chat\DialogMessageData;
-use App\Repositories\OpenAI\Chat\Character\CharacterRepositoryInterface;
 use App\Services\OpenAI\Chat\Enums\ChatModelEnum;
 use App\Services\OpenAI\Chat\Enums\DialogRolesEnum;
 
@@ -31,16 +30,16 @@ readonly class CharacterBuilder implements CharacterBuilderInterface
 
     public function withInteractiveMode(): CharacterBuilderInterface
     {
-        return new self($this->modelsEnum, $this->characterData, $this->buffer . __('openai.chat.prompts.interactive') . "\n");
+        return new self($this->modelsEnum, $this->characterData, $this->buffer.__('openai.chat.prompts.interactive')."\n");
     }
 
     public function withMarkdownResponse(): CharacterBuilderInterface
     {
-        return new self($this->modelsEnum, $this->characterData, $this->buffer . __('openai.chat.prompts.markdown') . "\n");
+        return new self($this->modelsEnum, $this->characterData, $this->buffer.__('openai.chat.prompts.markdown')."\n");
     }
 
     public function withGodMode(): CharacterBuilderInterface
     {
-        return new self($this->modelsEnum, $this->characterData, $this->buffer . __('openai.chat.prompts.godmode') . "\n");
+        return new self($this->modelsEnum, $this->characterData, $this->buffer.__('openai.chat.prompts.godmode')."\n");
     }
 }

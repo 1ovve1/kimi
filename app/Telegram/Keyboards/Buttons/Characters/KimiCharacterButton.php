@@ -12,5 +12,4 @@ class KimiCharacterButton extends AbstractCharacterButton
     {
         parent::__construct(CharacterEnum::KIMI);
     }
-
 }

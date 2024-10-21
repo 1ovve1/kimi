@@ -15,16 +15,14 @@ class SelectCharacterButton extends AbstractTelegramButton
     public function handle(
         TelegramServiceInterface $telegramService,
         CharacterListKeyboardFactory $characterListKeyboardFactory
-    ): void
-    {
+    ): void {
         $telegramService->updateKeyboard($characterListKeyboardFactory->get());
     }
 
     public function text(
         TelegramDataServiceInterface $telegramDataService,
         CharacterRepositoryInterface $characterRepository,
-    ): string
-    {
+    ): string {
         $chat = $telegramDataService->resolveChat();
         $character = $characterRepository->findForChat($chat);
 

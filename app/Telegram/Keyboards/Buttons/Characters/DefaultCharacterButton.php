@@ -12,5 +12,4 @@ class DefaultCharacterButton extends AbstractCharacterButton
     {
         parent::__construct(CharacterEnum::DEFAULT);
     }
-
 }

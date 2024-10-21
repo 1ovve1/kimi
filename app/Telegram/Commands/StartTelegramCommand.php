@@ -28,8 +28,8 @@ class StartTelegramCommand extends AbstractTelegramCommand
 
         $telegramDataService->storeChatAndUsersInDb();
 
-        $greetings = Cache::get('chat.' . $chat->id . '.greetings', fn() => $openAiChatService->dryAnswer(__('openai.chat.prompts.greetings')));
-        Cache::set('chat.' . $chat->id . '.greetings', $greetings);
+        $greetings = Cache::get('chat.'.$chat->id.'.greetings', fn () => $openAiChatService->dryAnswer(__('openai.chat.prompts.greetings')));
+        Cache::set('chat.'.$chat->id.'.greetings', $greetings);
 
         $telegramService->sendMessageWithKeyboard($greetings->content, (new StartKeyboardFactory)->get());
     }

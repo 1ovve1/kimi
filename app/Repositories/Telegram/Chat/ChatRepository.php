@@ -53,7 +53,7 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
         $chat = Chat::create([
             'target_type' => $targetData->type->value,
             'target_id' => $targetData->id,
-            'character_id' => Character::whereName(CharacterEnum::default())->first()->id
+            'character_id' => Character::whereName(CharacterEnum::default())->first()->id,
         ]);
 
         return new ChatData($chat->id, $chat->target);

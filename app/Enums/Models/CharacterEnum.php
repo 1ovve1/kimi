@@ -9,14 +9,14 @@ enum CharacterEnum: string
     case DEFAULT = 'default';
     case KIMI = 'Kimi No Sei';
 
-    static function default(): self
+    public static function default(): self
     {
         return self::KIMI;
     }
 
-    function resolvePrompt(?string $locale = null): string
+    public function resolvePrompt(?string $locale = null): string
     {
-        return match($this) {
+        return match ($this) {
             self::DEFAULT => __('openai.chat.characters.default', locale: $locale),
             self::KIMI => __('openai.chat.characters.kimi', locale: $locale),
         };

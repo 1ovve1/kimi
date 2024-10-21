@@ -13,7 +13,7 @@ class CharacterData extends Data
         readonly string $prompt
     ) {}
 
-    static public function makeDefault(): self
+    public static function makeDefault(): self
     {
         return new self(1, CharacterEnum::default(), CharacterEnum::default()->resolvePrompt());
     }
