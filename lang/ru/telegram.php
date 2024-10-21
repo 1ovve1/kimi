@@ -27,6 +27,7 @@ return [
             ],
             'select_character' => [
                 'name' => 'Персонаж: :Name',
+                'success' => 'Персонаж успешно изменен на ":Name"',
             ],
             'character' => [
                 'name' => ':Name',
