@@ -16,7 +16,7 @@ class CharacterSeeder extends Seeder
         Character::create([
             'name' => CharacterEnum::DEFAULT,
             'prompt_ru' => CharacterEnum::DEFAULT->resolvePrompt('ru'),
-            'prompt_en' => CharacterEnum::DEFAULT->resolvePrompt( 'en'),
+            'prompt_en' => CharacterEnum::DEFAULT->resolvePrompt('en'),
         ]);
 
         Character::create([

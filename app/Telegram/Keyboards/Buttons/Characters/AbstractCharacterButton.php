@@ -18,9 +18,7 @@ abstract class AbstractCharacterButton extends AbstractTelegramButton
 {
     public function __construct(
         readonly private CharacterEnum $characterEnum,
-    )
-    {
-    }
+    ) {}
 
     /**
      * @throws ChatNotFoundException
@@ -31,14 +29,13 @@ abstract class AbstractCharacterButton extends AbstractTelegramButton
         TelegramDataServiceInterface $telegramDataService,
         CharacterRepositoryInterface $characterRepository,
         ChatRepositoryInterface $chatRepository
-    ): void
-    {
+    ): void {
         $chat = $telegramDataService->resolveChat();
         $character = $characterRepository->findByEnum($this->characterEnum);
 
         if ($characterRepository->findForChat($chat)->name !== $character->name) {
             $chatRepository->setCharacter($chat, $character);
-            $telegramService->updateKeyboard((new StartKeyboardFactory())->get());
+            $telegramService->updateKeyboard((new StartKeyboardFactory)->get());
         }
 
     }
@@ -50,11 +47,10 @@ abstract class AbstractCharacterButton extends AbstractTelegramButton
     public function text(
         TelegramDataServiceInterface $telegramDataService,
         CharacterRepositoryInterface $characterRepository
-    ): string
-    {
+    ): string {
         $chat = $telegramDataService->resolveChat();
         $character = $characterRepository->findByEnum($this->characterEnum);
 
-        return __('telegram.keyboards.buttons.character.name', ['name' => $this->characterEnum->value]) . (($characterRepository->findForChat($chat)->name === $character->name) ? ' ✅' : '');
+        return __('telegram.keyboards.buttons.character.name', ['name' => $this->characterEnum->value]).(($characterRepository->findForChat($chat)->name === $character->name) ? ' ✅' : '');
     }
 }

@@ -32,6 +32,5 @@ $bot->group(function (Nutgram $bot) {
     $bot->onText('(.*)(kimi|KIMI|Kimi|Кими|кими|КИМИ)!(.*)', AskKimiAction::class);
 })->middleware(StoreTelegramRequestInDatabaseMiddleware::class);
 
-(new StartKeyboardFactory())->get()->listen($bot);
-(new CharacterListKeyboardFactory())->get()->listen($bot);
-
+(new StartKeyboardFactory)->get()->listen($bot);
+(new CharacterListKeyboardFactory)->get()->listen($bot);

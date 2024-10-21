@@ -13,15 +13,12 @@ class BackToButton extends AbstractTelegramButton
 {
     public function __construct(
         private readonly TelegramKeyboardInterface $telegramKeyboard,
-        private readonly ?ChatMessageData          $chatMessageData = null,
-    )
-    {
-    }
+        private readonly ?ChatMessageData $chatMessageData = null,
+    ) {}
 
     public function handle(
         TelegramServiceInterface $telegramService,
-    ): void
-    {
+    ): void {
         $telegramService->updateKeyboard($this->telegramKeyboard, $this->chatMessageData);
     }
 

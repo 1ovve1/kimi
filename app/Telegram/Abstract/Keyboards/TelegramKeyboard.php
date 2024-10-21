@@ -13,12 +13,13 @@ class TelegramKeyboard implements TelegramKeyboardInterface
 {
     /** @var Collection<TelegramButtonInterface> */
     protected Collection $buttonsBuffer;
+
     protected Collection $actionsHistory;
 
     public function __construct()
     {
-        $this->buttonsBuffer = new Collection();
-        $this->actionsHistory = new Collection();
+        $this->buttonsBuffer = new Collection;
+        $this->actionsHistory = new Collection;
     }
 
     public function make(): InlineKeyboardMarkup

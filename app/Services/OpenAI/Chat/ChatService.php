@@ -22,11 +22,11 @@ use OpenAI\Responses\Chat\CreateResponse as ChatCreateResponse;
 class ChatService extends AbstractService implements ChatServiceInterface
 {
     public function __construct(
-        readonly ChatContract              $client,
-        readonly CharacterBuilderFactory   $characterBuilderFactory,
+        readonly ChatContract $client,
+        readonly CharacterBuilderFactory $characterBuilderFactory,
 
-        readonly MemoryServiceInterface    $memoryService,
-        readonly ChatMessageRepositoryInterface     $chatMessageRepository,
+        readonly MemoryServiceInterface $memoryService,
+        readonly ChatMessageRepositoryInterface $chatMessageRepository,
         readonly CharacterRepositoryInterface $characterRepository,
     ) {}
 
@@ -38,7 +38,7 @@ class ChatService extends AbstractService implements ChatServiceInterface
             ->createRequestBody(DialogMessageData::fromUser($question));
 
         if (config('app.debug')) {
-            return new DialogMessageData("```php\n" . print_r($payload, true) . "\n```", DialogRolesEnum::ASSISTANT);
+            return new DialogMessageData("```php\n".print_r($payload, true)."\n```", DialogRolesEnum::ASSISTANT);
         }
 
         return $this->parseResponse(
@@ -61,9 +61,8 @@ class ChatService extends AbstractService implements ChatServiceInterface
             ->createRequestBody(DialogMessageData::fromChatMessage($chatMessageData));
 
         if (config('app.debug')) {
-            return new DialogMessageData("```php\n" . print_r($payload, true) . "\n```", DialogRolesEnum::ASSISTANT);
+            return new DialogMessageData("```php\n".print_r($payload, true)."\n```", DialogRolesEnum::ASSISTANT);
         }
-
 
         return $this->parseResponse(
             $this->client->create($payload)
@@ -87,7 +86,7 @@ class ChatService extends AbstractService implements ChatServiceInterface
             ->createRequestBody(...$memories);
 
         if (config('app.debug')) {
-            return new DialogMessageData("```php\n" . print_r($payload, true) . "\n```", DialogRolesEnum::ASSISTANT);
+            return new DialogMessageData("```php\n".print_r($payload, true)."\n```", DialogRolesEnum::ASSISTANT);
         }
 
         return $this->parseResponse(
@@ -105,7 +104,7 @@ class ChatService extends AbstractService implements ChatServiceInterface
             ->createRequestBody(DialogMessageData::fromChatMessage($chatMessageData));
 
         if (config('app.debug')) {
-            return new DialogMessageData("```php\n" . print_r($payload, true) . "\n```", DialogRolesEnum::ASSISTANT);
+            return new DialogMessageData("```php\n".print_r($payload, true)."\n```", DialogRolesEnum::ASSISTANT);
         }
 
         return $this->parseResponse(
