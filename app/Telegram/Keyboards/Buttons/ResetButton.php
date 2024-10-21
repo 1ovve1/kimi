@@ -35,13 +35,13 @@ class ResetButton extends AbstractTelegramButton
 
         if ($userRepository->isAdmin($chat, $user)) {
             $count = $memoryService->reset($chat);
-            $callbackService->answerCallback(__('telegram.commands.reset.info', ['count' => $count]));
+            $callbackService->answerCallback(__('telegram.keyboards.buttons.reset.info', ['count' => $count]));
 
             if ($count > 0) {
                 $telegramService->updateKeyboard((new StartKeyboardFactory)->get());
             }
         } else {
-            $callbackService->answerCallback(__('telegram.commands.reset.permissions_denied'));
+            $callbackService->answerCallback(__('telegram.keyboards.buttons.default.permissions_denied'));
         }
     }
 
@@ -50,6 +50,6 @@ class ResetButton extends AbstractTelegramButton
      */
     public static function text(TelegramDataServiceInterface $telegramDataService, MemoryRepositoryInterface $memoryRepository): string
     {
-        return __('telegram.commands.reset.name', ['count' => $memoryRepository->count($telegramDataService->resolveChat())]);
+        return __('telegram.keyboards.buttons.reset.name', ['count' => $memoryRepository->count($telegramDataService->resolveChat())]);
     }
 }

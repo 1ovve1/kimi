@@ -37,15 +37,15 @@ class InteractiveButton extends AbstractTelegramButton
         if ($userRepository->isAdmin($chat, $user)) {
             if ($chat->interactive_mode) {
                 $chatRepository->setInteractiveMode($chat, false);
-                $callbackService->answerCallback(__('telegram.commands.interactive.disabled'));
+                $callbackService->answerCallback(__('telegram.keyboards.buttons.interactive.disabled'));
             } else {
                 $chatRepository->setInteractiveMode($chat, true);
-                $callbackService->answerCallback(__('telegram.commands.interactive.enabled'));
+                $callbackService->answerCallback(__('telegram.keyboards.buttons.interactive.enabled'));
             }
 
             $telegramService->updateKeyboard((new StartKeyboardFactory)->get());
         } else {
-            $callbackService->answerCallback(__('telegram.commands.interactive.permissions_denied'));
+            $callbackService->answerCallback(__('telegram.keyboards.buttons.default.permissions_denied'));
         }
     }
 
@@ -53,7 +53,7 @@ class InteractiveButton extends AbstractTelegramButton
     {
         $chat = $telegramDataService->resolveChat();
 
-        return __('telegram.commands.interactive.name', [
+        return __('telegram.keyboards.buttons.interactive.name', [
             'status' => $chat->interactive_mode ? '✅' : '❌',
         ]);
     }

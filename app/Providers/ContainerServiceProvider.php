@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Repositories\Abstract\RepositoryFactoryInterface;
+use App\Repositories\OpenAI\Chat\Character\CharacterRepositoryInterface;
 use App\Repositories\OpenAI\Chat\Memory\MemoryRepositoryInterface;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
 use App\Repositories\Telegram\ChatMessage\ChatMessageRepositoryInterface;
@@ -39,6 +40,7 @@ class ContainerServiceProvider extends ServiceProvider
             TelegramDataRepositoryInterface::class,
             ChatMessageRepositoryInterface::class,
             MemoryRepositoryInterface::class,
+            CharacterRepositoryInterface::class,
         ]);
     }
 

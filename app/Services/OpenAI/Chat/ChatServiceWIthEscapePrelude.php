@@ -11,9 +11,9 @@ use App\Services\OpenAI\Chat\Enums\DialogRolesEnum;
 
 class ChatServiceWIthEscapePrelude extends ChatService implements ChatServiceInterface
 {
-    public function answer(ChatMessageData $chatMessageData): DialogMessageData
+    public function answer(ChatData $chatData, ChatMessageData $chatMessageData): DialogMessageData
     {
-        $answer = parent::answer($chatMessageData);
+        $answer = parent::answer($chatData, $chatMessageData);
 
         return new DialogMessageData(
             $this->escapePrelude($answer->content),

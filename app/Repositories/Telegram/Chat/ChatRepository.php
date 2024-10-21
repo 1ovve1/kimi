@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories\Telegram\Chat;
 
+use App\Data\OpenAI\Chat\CharacterData;
 use App\Data\Telegram\Chat\ChatData;
 use App\Data\Telegram\Chat\ChatUserData;
 use App\Data\Telegram\Chat\Types\ChannelData;
@@ -11,12 +12,14 @@ use App\Data\Telegram\Chat\Types\GroupData;
 use App\Data\Telegram\Chat\Types\PrivateData;
 use App\Data\Telegram\Chat\Types\SupergroupData;
 use App\Data\Telegram\UserData;
+use App\Enums\Models\CharacterEnum;
 use App\Exceptions\Repositories\Telegram\Chat\ChannelNotFoundException;
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Exceptions\Repositories\Telegram\Chat\GroupNotFoundException;
 use App\Exceptions\Repositories\Telegram\Chat\SupergroupNotFoundException;
 use App\Exceptions\Repositories\Telegram\User\UserNotFoundException;
 use App\Models\Channel;
+use App\Models\Character;
 use App\Models\Chat;
 use App\Models\ChatUser;
 use App\Models\Group;
@@ -50,6 +53,7 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
         $chat = Chat::create([
             'target_type' => $targetData->type->value,
             'target_id' => $targetData->id,
+            'character_id' => Character::whereName(CharacterEnum::default())->first()->id
         ]);
 
         return new ChatData($chat->id, $chat->target);
@@ -133,6 +137,16 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
     public function find(ChatData $chatData): ChatData
     {
         $chat = Chat::findForChatData($chatData);
+
+        return ChatData::from($chat);
+    }
+
+    public function setCharacter(ChatData $chatData, CharacterData $characterData): ChatData
+    {
+        $chat = Chat::findForChatData($chatData);
+        $character = Character::findForCharacterData($characterData);
+
+        $chat->update(['character_id' => $character->id]);
 
         return ChatData::from($chat);
     }
