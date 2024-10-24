@@ -62,6 +62,24 @@ class ContainerServiceProvider extends ServiceProvider
     }
 
     /**
+     * @param  array<string>  $services
+     */
+    public function bindManySingletonServices(array $services): void
+    {
+        foreach ($services as $service) {
+            $this->bindSingletonService($service);
+        }
+    }
+
+    public function bindManySingletonRepositories(array $repositories): void
+    {
+        foreach ($repositories as $repositoryInterfaceName) {
+            $this->bindSingletonRepository($repositoryInterfaceName);
+        }
+    }
+
+
+    /**
      * @param  string  $serviceInterfaceName  - service interface name
      */
     public function bindService(string $serviceInterfaceName): void
@@ -83,5 +101,29 @@ class ContainerServiceProvider extends ServiceProvider
         $repositoryFactory = new $repositoryFactoryClassName;
 
         $this->app->bind($repositoryInterfaceName, fn ($_, $params) => $repositoryFactory->get($params));
+    }
+
+    /**
+     * @param  string  $serviceInterfaceName  - service interface name
+     */
+    public function bindSingletonService(string $serviceInterfaceName): void
+    {
+        $serviceFactoryClassName = str_replace('Interface', 'Factory', $serviceInterfaceName);
+        /** @var ServiceFactoryInterface $serviceFactory */
+        $serviceFactory = new $serviceFactoryClassName;
+
+        $this->app->singleton($serviceInterfaceName, fn ($_, $params) => $serviceFactory->get($params));
+    }
+
+    /**
+     * @param  string  $repositoryInterfaceName  - repository interface name
+     */
+    public function bindSingletonRepository(string $repositoryInterfaceName): void
+    {
+        $repositoryFactoryClassName = str_replace('Interface', 'Factory', $repositoryInterfaceName);
+        /** @var RepositoryFactoryInterface $repositoryFactory */
+        $repositoryFactory = new $repositoryFactoryClassName;
+
+        $this->app->singleton($repositoryInterfaceName, fn ($_, $params) => $repositoryFactory->get($params));
     }
 }

@@ -105,7 +105,7 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
         );
     }
 
-    public function sendMessageWithKeyboard(string $content, TelegramKeyboardInterface $telegramKeyboard, ?ChatData $chatData = null): ChatMessageData
+    public function sendMessageWithKeyboard(TelegramKeyboardInterface $telegramKeyboard, ?string $content = null, ?ChatData $chatData = null): ChatMessageData
     {
         $chatData ??= $this->telegramDataRepository->getChat();
 
@@ -114,7 +114,7 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
         }
 
         $message = $this->nutgram
-            ->sendMessage($content, chat_id: $chatData->target->id, parse_mode: self::PARSE_MODE, reply_markup: $telegramKeyboard->make());
+            ->sendMessage($content ?? $telegramKeyboard->getDescription(), chat_id: $chatData->target->id, parse_mode: self::PARSE_MODE, reply_markup: $telegramKeyboard->make());
 
         return ChatMessageData::fromNutgram($message);
     }
@@ -132,7 +132,7 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
         $chatMessageData ??= $this->telegramDataRepository->getMessage();
 
         $this->nutgram
-            ->editMessageReplyMarkup(chat_id: $chatData->target->tg_id, message_id: $chatMessageData->id, reply_markup: $telegramKeyboard->make());
+            ->editMessageText($telegramKeyboard->getDescription(), chat_id: $chatData->id, message_id: $chatMessageData->id, parse_mode: self::PARSE_MODE, reply_markup: $telegramKeyboard->make());
     }
 
     public function deleteMessage(?ChatMessageData $chatMessageData = null, ?ChatData $chatData = null): void

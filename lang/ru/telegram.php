@@ -3,12 +3,11 @@
 declare(strict_types=1);
 
 return [
-    'commands' => [
-        'start' => [
-            'greetings' => "Привет 🖐\n ",
-        ],
-    ],
     'keyboards' => [
+        'descriptions' => [
+            'start' => 'Привет 🖐\n',
+            'select_character' => "Выберите персонажа:"
+        ],
         'buttons' => [
             'default' => [
                 'permissions_denied' => 'Данной опцией могут пользоваться только администраторы(',
