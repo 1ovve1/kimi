@@ -38,7 +38,7 @@ class ResetButton extends AbstractTelegramButton
             $callbackService->answerCallback(__('telegram.keyboards.buttons.reset.info', ['count' => $count]));
 
             if ($count > 0) {
-                $telegramService->updateKeyboard((new StartKeyboardFactory)->get());
+                $telegramService->updateKeyboard((new StartKeyboardFactory)->withAiGreetingsDescription());
             }
         } else {
             $callbackService->answerCallback(__('telegram.keyboards.buttons.default.permissions_denied'));
