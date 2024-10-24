@@ -8,6 +8,7 @@ enum CharacterEnum: string
 {
     case DEFAULT = 'default';
     case KIMI = 'Kimi No Sei';
+    case CHIKA = 'Chika Fujiwara';
 
     public static function default(): self
     {
@@ -19,6 +20,7 @@ enum CharacterEnum: string
         return match ($this) {
             self::DEFAULT => __('openai.chat.characters.default', locale: $locale),
             self::KIMI => __('openai.chat.characters.kimi', locale: $locale),
+            self::CHIKA => __('openai.chat.characters.chika', locale: $locale),
         };
     }
 }

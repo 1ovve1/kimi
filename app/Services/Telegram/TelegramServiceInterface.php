@@ -29,7 +29,7 @@ interface TelegramServiceInterface
      */
     public function replyToMessageAndSave(string $content, ?ChatMessageData $chatMessageData = null, ?ChatData $chatData = null): ChatMessageData;
 
-    public function sendMessageWithKeyboard(string $content, TelegramKeyboardInterface $telegramKeyboard, ?ChatData $chatData = null): ChatMessageData;
+    public function sendMessageWithKeyboard(TelegramKeyboardInterface $telegramKeyboard, ?string $content = null, ?ChatData $chatData = null): ChatMessageData;
 
     public function updateKeyboard(TelegramKeyboard $telegramKeyboard, ?ChatMessageData $chatMessageData = null): void;
 

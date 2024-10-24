@@ -16,21 +16,11 @@ class StartTelegramCommand extends AbstractTelegramCommand
 
     protected ?string $description = 'start kimi';
 
-    /**
-     * @throws InvalidArgumentException
-     */
     public function onHandle(
-        ChatServiceInterface $openAiChatService,
         TelegramServiceInterface $telegramService,
-        TelegramDataServiceInterface $telegramDataService
+
+        StartKeyboardFactory $startKeyboardFactory,
     ): void {
-        $chat = $telegramDataService->resolveChat();
-
-        $telegramDataService->storeChatAndUsersInDb();
-
-        $greetings = Cache::get('chat.'.$chat->id.'.greetings', fn () => $openAiChatService->dryAnswer(__('openai.chat.prompts.greetings')));
-        Cache::set('chat.'.$chat->id.'.greetings', $greetings);
-
-        $telegramService->sendMessageWithKeyboard($greetings->content, (new StartKeyboardFactory)->get());
+        $telegramService->sendMessageWithKeyboard($startKeyboardFactory->withAiGreetingsDescription());
     }
 }

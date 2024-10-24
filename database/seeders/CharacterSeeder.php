@@ -24,5 +24,11 @@ class CharacterSeeder extends Seeder
             'prompt_ru' => CharacterEnum::KIMI->resolvePrompt('ru'),
             'prompt_en' => CharacterEnum::KIMI->resolvePrompt('en'),
         ]);
+
+        Character::create([
+            'name' => CharacterEnum::CHIKA,
+            'prompt_ru' => CharacterEnum::CHIKA->resolvePrompt('ru'),
+            'prompt_en' => CharacterEnum::CHIKA->resolvePrompt('en'),
+        ]);
     }
 }

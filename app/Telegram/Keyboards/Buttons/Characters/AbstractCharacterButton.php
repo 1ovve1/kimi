@@ -12,6 +12,7 @@ use App\Exceptions\Repository\OpenAI\Character\CharacterNotFoundException;
 use App\Repositories\OpenAI\Chat\Character\CharacterRepositoryInterface;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
 use App\Repositories\Telegram\User\UserRepositoryInterface;
+use App\Services\OpenAI\Chat\ChatServiceInterface;
 use App\Services\Telegram\Callback\CallbackServiceInterface;
 use App\Services\Telegram\TelegramData\TelegramDataServiceInterface;
 use App\Services\Telegram\TelegramServiceInterface;
@@ -34,9 +35,12 @@ abstract class AbstractCharacterButton extends AbstractTelegramButton
         TelegramServiceInterface $telegramService,
         TelegramDataServiceInterface $telegramDataService,
         CallbackServiceInterface $callbackService,
+
         CharacterRepositoryInterface $characterRepository,
         ChatRepositoryInterface $chatRepository,
-        UserRepositoryInterface $userRepository
+        UserRepositoryInterface $userRepository,
+
+        StartKeyboardFactory $startKeyboardFactory,
     ): void {
         $chat = $telegramDataService->resolveChat();
         $user = $telegramDataService->resolveUser();
@@ -49,7 +53,7 @@ abstract class AbstractCharacterButton extends AbstractTelegramButton
 
                 $callbackService->answerCallback(__('telegram.keyboards.buttons.select_character.success', ['name' => $this->characterEnum->value]));
 
-                $telegramService->updateKeyboard((new StartKeyboardFactory)->get());
+                $telegramService->updateKeyboard($startKeyboardFactory->withAiGreetingsDescription());
             }
         } else {
             $callbackService->answerCallback(__('telegram.keyboards.buttons.default.permissions_denied'));
