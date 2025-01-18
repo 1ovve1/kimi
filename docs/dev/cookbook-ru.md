@@ -18,6 +18,8 @@
         + [Actions](#actions)
         + [Middlewares](#middlewares)
         + [Commands](#commands)
+        + [Keyboards](#keyboards)
+          + [Buttons](#buttons)
 
 # [Установка](#содержание)
 
@@ -71,9 +73,10 @@ MYSQL_USER=
 MYSQL_PASSWORD=
 
 # кастомизация путей к хранилищам контейнеров
-STORAGE_MYSQL=./mysql/storage
-STORAGE_NGINX=./nginx/storage
-STORAGE_FPM=./fpm/storage
+STORAGE_PREFIX=.
+STORAGE_MYSQL=${STORAGE_PREFIX}/mysql/storage
+STORAGE_NGINX=${STORAGE_PREFIX}/nginx/storage
+STORAGE_FPM=${STORAGE_PREFIX}/fpm/storage
 # путь к проекту (на случай изоляции докер окружения)
 STORAGE_APP=./..
 
@@ -122,7 +125,7 @@ bash ./run.sh
 php artisan make:repository SubDur/RepositoryName
 ```
 
-После этого действия будут сгенерированны файлы:
+После этого действия будут сгенерированны следующие файлы:
 
 + app/Repositories/SubDir/RepositoryNameRepositoryInterface.php;
 
@@ -372,18 +375,15 @@ declare(strict_types=1);
 
 namespace App\Telegram\Abstract\Actions;
 
-use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
-use App\Services\Telegram\TelegramServiceInterface;
-
-interface TelegramActionInterface
-{
-    /**
-     * @param TelegramServiceInterface $telegramService - service for interacting with telegram api
-     * @param TelegramDataRepositoryInterface $telegramDataRepository - repository that contains telegram request information
-     */
-    public function handle(TelegramServiceInterface $telegramService, TelegramDataRepositoryInterface $telegramDataRepository): void;
-}
+/**
+ * @phpstan-require-extends AbstractTelegramAction
+ *
+ * @method void handle()
+ */
+interface TelegramActionInterface {}
 ```
+
+Допускаются произвольные аргументы в методе handle(), работает DI. 
 
 ### [Middlewares](#содержание)
 
@@ -396,19 +396,15 @@ declare(strict_types=1);
 
 namespace App\Telegram\Abstract\Middlewares;
 
-use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
-use App\Services\Telegram\TelegramServiceInterface;
-
-interface TelegramMiddlewareInterface {
-    /**
-     * @param TelegramServiceInterface $telegramService - service for interact with the telegram api
-     * @param TelegramDataRepositoryInterface $telegramDataRepository - repository that contains telegram request information
-     * @param callable $next - action callback
-     * @return void
-     */
-    public function handle(TelegramServiceInterface $telegramService, TelegramDataRepositoryInterface $telegramDataRepository, callable $next): void;
-}
+/**
+ * @phpstan-require-extends AbstractTelegramMiddleware
+ *
+ * @method void handle()
+ */
+interface TelegramMiddlewareInterface {}
 ```
+
+Допускаются произвольные аргументы в методе handle(), работает DI.
 
 ### [Commands](#содержание)
 
@@ -429,19 +425,94 @@ declare(strict_types=1);
 
 namespace App\Telegram\Abstract\Commands;
 
-use App\Repositories\Telegram\TelegramData\TelegramDataRepositoryInterface;
-use App\Services\Telegram\TelegramServiceInterface;
-
 /**
  * @phpstan-require-extends AbstractTelegramCommand
+ *
+ * @method void onHandle()
  */
-interface TelegramCommandInterface
-{
-    /**
-     * @param TelegramServiceInterface $telegramService - service for interact with the telegram api
-     * @param TelegramDataRepositoryInterface $telegramDataRepository - repository that contains telegram request information
-     * @return void
-     */
-    public function onHandle(TelegramServiceInterface $telegramService, TelegramDataRepositoryInterface $telegramDataRepository): void;
+interface TelegramCommandInterface {}
 }
 ```
+
+Допускаются произвольные аргументы в методе handle(), работает DI.
+
+### [Keyboards](#содержание)
+
+ Клавиатуры аккумулируют в себе комбинации кнопок, описание действий и их исполнение. Интерфейс конструктора клавиатуры: 
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Telegram\Abstract\Keyboards;
+
+use App\Telegram\Abstract\Keyboards\Buttons\TelegramButtonInterface;
+use SergiX44\Nutgram\Nutgram;
+
+/**
+ * Keyboard interface that provides methods for:
+ * - build keyboard layouts;
+ * - customize descriptions;
+ * - listen callback actions.
+ */
+interface TelegramKeyboardInterface
+{
+    /**
+     * Append buttons in columns layout
+     */
+    public function addColumn(TelegramButtonInterface ...$button): self;
+
+    /**
+     * Append buttons in row layout
+     */
+    public function addRow(TelegramButtonInterface ...$button): self;
+
+    /**
+     * Store description for keyboard
+     */
+    public function setDescription(string $description): self;
+
+    /**
+     * Create keyboard instance
+     */
+    public function make(): mixed;
+
+    /**
+     * Get description for keyboard
+     */
+    public function getDescription(): string;
+
+    /**
+     * Listen keyboard buttons callbacks
+     */
+    public function listen(Nutgram $nutgram): void;
+}
+```
+
+#### [Buttons](#содержание)
+
+Интерфейс кнопок:
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\Telegram\Abstract\Keyboards\Buttons;
+
+/**
+ * @phpstan-require-extends AbstractTelegramButton
+ *
+ * @method void handle()
+ * @method string text()
+ */
+interface TelegramButtonInterface
+{
+    public function make(): mixed;
+
+    public static function name(): string;
+}
+```
+
+Допускаются произвольные аргументы в методе handle(), работает DI.
