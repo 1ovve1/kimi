@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Data\Telegram\Chat\Types\PrivateData;
+use App\Data\Telegram\UserData;
+use App\Exceptions\Repositories\Telegram\User\UserNotFoundException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
-class User extends Authenticatable
+class User extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -17,31 +19,30 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'tg_id',
+        'first_name',
+        'last_name',
+        'username',
+        'language_code',
+        'is_premium',
+        'is_bot',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
+     * @return MorphOne<Chat>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function chat(): MorphOne
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->morphOne(Chat::class, 'target');
+    }
+
+    /**
+     * @throws UserNotFoundException
+     */
+    public static function findForUserData(UserData|PrivateData $userData): User
+    {
+        return User::whereId($userData->id)
+            ->orWhere('tg_id', $userData->tg_id)
+            ->first() ?? throw new UserNotFoundException($userData);
     }
 }
