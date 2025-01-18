@@ -31,14 +31,14 @@ interface TelegramKeyboardInterface
     public function setDescription(string $description): self;
 
     /**
-     * Create keyboard instance
-     */
-    public function make(): mixed;
-
-    /**
      * Get description for keyboard
      */
     public function getDescription(): string;
+
+    /**
+     * Create keyboard instance
+     */
+    public function make(): mixed;
 
     /**
      * Listen keyboard buttons callbacks
