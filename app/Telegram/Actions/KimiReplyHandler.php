@@ -21,7 +21,6 @@ class KimiReplyHandler extends AbstractTelegramAction
      * @throws ChatMessageAlreadyExistsException
      * @throws ChatNotFoundException
      * @throws UserNotFoundException
-     * @throws ReplyWasNotFoundedException
      * @throws TelegramUserNotFoundException
      */
     public function handle(
@@ -31,12 +30,13 @@ class KimiReplyHandler extends AbstractTelegramAction
         TelegramDataRepositoryInterface $telegramDataRepository
     ): void {
         $chatData = $telegramDataService->resolveChat();
+        $botInstance = $telegramDataService->resolveMe();
 
         try {
             if ($chatData->interactive_mode) {
                 $userReply = $telegramDataService->resolveUserReply();
 
-                if ($userReply->is_bot) {
+                if ($userReply->same($botInstance)) {
                     $chatMessageData = $telegramDataService->resolveMessage();
 
                     $answer = $chatService->interactiveAnswer($chatData);
@@ -46,7 +46,7 @@ class KimiReplyHandler extends AbstractTelegramAction
             } else {
                 $userReply = $telegramDataRepository->getUserReply();
 
-                if ($userReply->is_bot) {
+                if ($userReply->same($botInstance)) {
                     $chatMessageData = $telegramDataRepository->getMessage();
 
                     $answer = $chatService->answer($chatData, $chatMessageData);
