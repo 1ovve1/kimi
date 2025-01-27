@@ -3,6 +3,7 @@
 namespace App\Data\Telegram;
 
 use App\Models\User;
+use phpDocumentor\Reflection\Types\Boolean;
 use Spatie\LaravelData\Data;
 
 /**
@@ -28,5 +29,10 @@ class UserData extends Data
             'id' => null,
             'tg_id' => $user->id,
         ]);
+    }
+
+    public function same(UserData $userData): bool
+    {
+        return $this->tg_id === $userData->tg_id;
     }
 }
