@@ -8,7 +8,6 @@ use App\Data\Telegram\Chat\ChatMessageData;
 use App\Services\Telegram\TelegramData\TelegramDataServiceInterface;
 use App\Services\Telegram\TelegramServiceInterface;
 use App\Telegram\Abstract\Keyboards\Buttons\AbstractTelegramButton;
-use App\Telegram\Abstract\Keyboards\TelegramKeyboardInterface;
 use Closure;
 
 class BackToButton extends AbstractTelegramButton

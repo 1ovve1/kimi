@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Telegram\Abstract\Keyboards;
 
-use App\Services\Telegram\TelegramServiceInterface;
 use App\Telegram\Abstract\Keyboards\Buttons\TelegramButtonInterface;
 use Illuminate\Support\Collection;
 use SergiX44\Nutgram\Nutgram;

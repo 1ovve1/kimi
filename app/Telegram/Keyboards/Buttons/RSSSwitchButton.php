@@ -16,7 +16,7 @@ use App\Services\Telegram\TelegramServiceInterface;
 use App\Telegram\Abstract\Keyboards\Buttons\AbstractTelegramButton;
 use App\Telegram\Keyboards\StartKeyboardFactory;
 
-class InteractiveButton extends AbstractTelegramButton
+class RSSSwitchButton extends AbstractTelegramButton
 {
     /**
      * @throws UserNotFoundException
@@ -35,12 +35,12 @@ class InteractiveButton extends AbstractTelegramButton
         $user = $telegramDataService->resolveUser();
 
         if ($userRepository->isAdmin($chat, $user)) {
-            if ($chat->interactive_mode) {
-                $chatRepository->setInteractiveMode($chat, false);
-                $callbackService->answerCallback(__('telegram.keyboards.buttons.interactive.disabled'));
+            if ($chat->rss) {
+                $chatRepository->setRss($chat, false);
+                $callbackService->answerCallback(__('telegram.keyboards.buttons.rss.disabled'));
             } else {
-                $chatRepository->setInteractiveMode($chat, true);
-                $callbackService->answerCallback(__('telegram.keyboards.buttons.interactive.enabled'));
+                $chatRepository->setRss($chat, true);
+                $callbackService->answerCallback(__('telegram.keyboards.buttons.rss.enabled'));
             }
 
             $telegramService->updateKeyboard((new StartKeyboardFactory)->withAiGreetingsDescription());
@@ -53,8 +53,8 @@ class InteractiveButton extends AbstractTelegramButton
     {
         $chat = $telegramDataService->resolveChat();
 
-        return __('telegram.keyboards.buttons.interactive.name', [
-            'status' => $chat->interactive_mode ? '✅' : '❌',
+        return __('telegram.keyboards.buttons.rss.name', [
+            'status' => $chat->rss ? '✅' : '❌',
         ]);
     }
 }

@@ -12,7 +12,7 @@ enum CharacterEnum: string
 
     public static function default(): self
     {
-        return self::KIMI;
+        return self::DEFAULT;
     }
 
     public function resolvePrompt(?string $locale = null): string

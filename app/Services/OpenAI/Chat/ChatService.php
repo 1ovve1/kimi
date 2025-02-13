@@ -9,7 +9,7 @@ use App\Data\Telegram\Chat\ChatData;
 use App\Data\Telegram\Chat\ChatMessageData;
 use App\Enums\Models\CharacterEnum;
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
-use App\Exceptions\Repositories\Telegram\ChatMessage\ChatMessageNotFoundException;
+use App\Exceptions\Repository\OpenAI\Character\CharacterNotFoundException;
 use App\Repositories\OpenAI\Chat\Character\CharacterRepositoryInterface;
 use App\Repositories\Telegram\ChatMessage\ChatMessageRepositoryInterface;
 use App\Services\Abstract\AbstractService;
@@ -30,9 +30,11 @@ class ChatService extends AbstractService implements ChatServiceInterface
         readonly CharacterRepositoryInterface $characterRepository,
     ) {}
 
-    public function dryAnswer(string $question): DialogMessageData
+    public function dryAnswer(string $question, ?CharacterEnum $characterEnum = null): DialogMessageData
     {
-        $characterBuilder = $this->characterBuilderFactory->makeDefault();
+        $characterBuilder = $this->characterBuilderFactory->fromCharacterData(
+            $this->characterRepository->findByEnum($characterEnum)
+        );
 
         $payload = $characterBuilder
             ->createRequestBody(DialogMessageData::fromUser($question));
@@ -52,7 +54,7 @@ class ChatService extends AbstractService implements ChatServiceInterface
             $characterBuilder = $this->characterBuilderFactory->fromCharacterData(
                 $this->characterRepository->findForChat($chatData)
             );
-        } catch (ChatMessageNotFoundException|ChatNotFoundException $e) {
+        } catch (CharacterNotFoundException|ChatNotFoundException $e) {
             $characterBuilder = $this->characterBuilderFactory->makeDefault();
         }
 
@@ -75,7 +77,7 @@ class ChatService extends AbstractService implements ChatServiceInterface
             $characterBuilder = $this->characterBuilderFactory->fromCharacterData(
                 $this->characterRepository->findForChat($chatData)
             );
-        } catch (ChatNotFoundException $e) {
+        } catch (CharacterNotFoundException|ChatNotFoundException $e) {
             $characterBuilder = $this->characterBuilderFactory->makeDefault();
         }
 

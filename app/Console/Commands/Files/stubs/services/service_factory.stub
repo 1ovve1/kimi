@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\App;
 
 class {{ classname }} implements ServiceFactoryInterface
 {
-    function get(): {{ return_type }}
+    function get(array $params = []): {{ return_type }}
     {
         return App::make({{ new_classname }}::class);
     }

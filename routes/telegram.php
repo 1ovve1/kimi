@@ -5,7 +5,6 @@
 use App\Telegram\Actions\KimiReplyHandler;
 use App\Telegram\Actions\OpenAI\ChatGPT\AskKimiAction;
 use App\Telegram\Commands\OpenAI\Chat\AskKimiCommand;
-use App\Telegram\Commands\OpenAI\Chat\DanKimiCommand;
 use App\Telegram\Commands\StartTelegramCommand;
 use App\Telegram\Keyboards\CharacterListKeyboardFactory;
 use App\Telegram\Keyboards\StartKeyboardFactory;
