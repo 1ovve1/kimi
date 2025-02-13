@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
             'private' => User::class,
             'group' => Group::class,
             'supergroup' => Supergroup::class,
-            'Channel' => Channel::class,
+            'channel' => Channel::class,
         ]);
     }
 }

@@ -12,7 +12,6 @@ use App\Exceptions\Repository\OpenAI\Character\CharacterNotFoundException;
 use App\Repositories\OpenAI\Chat\Character\CharacterRepositoryInterface;
 use App\Repositories\Telegram\Chat\ChatRepositoryInterface;
 use App\Repositories\Telegram\User\UserRepositoryInterface;
-use App\Services\OpenAI\Chat\ChatServiceInterface;
 use App\Services\Telegram\Callback\CallbackServiceInterface;
 use App\Services\Telegram\TelegramData\TelegramDataServiceInterface;
 use App\Services\Telegram\TelegramServiceInterface;

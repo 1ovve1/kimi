@@ -18,6 +18,7 @@ use App\Telegram\Abstract\Keyboards\TelegramKeyboardInterface;
 use Illuminate\Support\Stringable;
 use SergiX44\Nutgram\Nutgram;
 use SergiX44\Nutgram\Telegram\Properties\ParseMode;
+use SergiX44\Nutgram\Telegram\Types\Message\LinkPreviewOptions;
 
 class NutgramTelegramService extends AbstractService implements TelegramServiceInterface
 {
@@ -46,7 +47,7 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
         }
 
         $message = $this->nutgram
-            ->sendMessage($content, chat_id: $chatData->target->id, parse_mode: self::PARSE_MODE);
+            ->sendMessage($content, chat_id: $chatData->target->tg_id, parse_mode: self::PARSE_MODE, link_preview_options: new LinkPreviewOptions(true));
 
         return ChatMessageData::fromNutgram($message);
     }
@@ -114,7 +115,7 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
         }
 
         $message = $this->nutgram
-            ->sendMessage($content ?? $telegramKeyboard->getDescription(), chat_id: $chatData->target->id, parse_mode: self::PARSE_MODE, reply_markup: $telegramKeyboard->make());
+            ->sendMessage($content ?? $telegramKeyboard->getDescription(), chat_id: $chatData->target->tg_id, parse_mode: self::PARSE_MODE, reply_markup: $telegramKeyboard->make());
 
         return ChatMessageData::fromNutgram($message);
     }
@@ -132,7 +133,7 @@ class NutgramTelegramService extends AbstractService implements TelegramServiceI
         $chatMessageData ??= $this->telegramDataRepository->getMessage();
 
         $this->nutgram
-            ->editMessageText($telegramKeyboard->getDescription(), chat_id: $chatData->id, message_id: $chatMessageData->id, parse_mode: self::PARSE_MODE, reply_markup: $telegramKeyboard->make());
+            ->editMessageText($telegramKeyboard->getDescription(), chat_id: $chatData->target->tg_id, message_id: $chatMessageData->tg_id, parse_mode: self::PARSE_MODE, reply_markup: $telegramKeyboard->make());
     }
 
     public function deleteMessage(?ChatMessageData $chatMessageData = null, ?ChatData $chatData = null): void
