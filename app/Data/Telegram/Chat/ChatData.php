@@ -24,6 +24,7 @@ class ChatData extends Data
         readonly ?int $id,
         mixed $target,
         readonly bool $interactive_mode = false,
+        readonly bool $rss = false,
     ) {
         if ($target instanceof User) {
             $this->target = PrivateData::from($target);

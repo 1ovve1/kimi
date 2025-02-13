@@ -26,6 +26,7 @@ use App\Models\Group;
 use App\Models\Supergroup;
 use App\Models\User;
 use App\Repositories\Abstract\AbstractRepository;
+use Illuminate\Support\Collection;
 use RuntimeException;
 use SergiX44\Nutgram\Telegram\Properties\ChatType;
 
@@ -134,6 +135,16 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
         return ChatData::from($chat);
     }
 
+    public function setRss(ChatData $chatData, bool $rss): ChatData
+    {
+        $chat = Chat::findForChatData($chatData);
+
+        $chat->rss = $rss;
+        $chat->save();
+
+        return ChatData::from($chat);
+    }
+
     public function find(ChatData $chatData): ChatData
     {
         $chat = Chat::findForChatData($chatData);
@@ -149,5 +160,12 @@ class ChatRepository extends AbstractRepository implements ChatRepositoryInterfa
         $chat->update(['character_id' => $character->id]);
 
         return ChatData::from($chat);
+    }
+
+    public function getAllRssChats(): Collection
+    {
+        return new Collection(ChatData::collect(
+            Chat::where('rss', true)->with('target')->get()
+        ));
     }
 }

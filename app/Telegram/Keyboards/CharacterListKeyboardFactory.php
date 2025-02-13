@@ -21,7 +21,7 @@ class CharacterListKeyboardFactory
                 new DefaultCharacterButton,
                 new KimiCharacterButton,
                 new ChikaCharacterButton,
-                new BackToButton(fn () => (new StartKeyboardFactory())->withAiGreetingsDescription())
+                new BackToButton(fn () => (new StartKeyboardFactory)->withAiGreetingsDescription())
             );
     }
 }

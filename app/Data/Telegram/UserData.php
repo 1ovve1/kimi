@@ -3,7 +3,6 @@
 namespace App\Data\Telegram;
 
 use App\Models\User;
-use phpDocumentor\Reflection\Types\Boolean;
 use Spatie\LaravelData\Data;
 
 /**

@@ -7,11 +7,16 @@ namespace App\Services\OpenAI\Chat;
 use App\Data\OpenAI\Chat\DialogMessageData;
 use App\Data\Telegram\Chat\ChatData;
 use App\Data\Telegram\Chat\ChatMessageData;
+use App\Enums\Models\CharacterEnum;
 use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
+use App\Exceptions\Repository\OpenAI\Character\CharacterNotFoundException;
 
 interface ChatServiceInterface
 {
-    public function dryAnswer(string $question): DialogMessageData;
+    /**
+     * @throws CharacterNotFoundException
+     */
+    public function dryAnswer(string $question, CharacterEnum $characterEnum = CharacterEnum::DEFAULT): DialogMessageData;
 
     public function answer(ChatData $chatData, ChatMessageData $chatMessageData): DialogMessageData;
 

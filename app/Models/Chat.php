@@ -22,6 +22,7 @@ class Chat extends Model
         'target_id',
         'character_id',
         'interactive_mode',
+        'rss',
     ];
 
     /**

@@ -16,6 +16,7 @@ use App\Exceptions\Repositories\Telegram\Chat\ChatNotFoundException;
 use App\Exceptions\Repositories\Telegram\User\UserNotFoundException;
 use App\Exceptions\Repository\OpenAI\Character\CharacterNotFoundException;
 use App\Repositories\Abstract\RepositoryInterface;
+use Illuminate\Support\Collection;
 
 interface ChatRepositoryInterface extends RepositoryInterface
 {
@@ -43,6 +44,11 @@ interface ChatRepositoryInterface extends RepositoryInterface
     public function setInteractiveMode(ChatData $chatData, bool $interactiveMode): ChatData;
 
     /**
+     * @throws ChatNotFoundException
+     */
+    public function setRss(ChatData $chatData, bool $rss): ChatData;
+
+    /**
      * Find chat in db
      *
      * @throws ChatNotFoundException
@@ -54,4 +60,9 @@ interface ChatRepositoryInterface extends RepositoryInterface
      * @throws CharacterNotFoundException
      */
     public function setCharacter(ChatData $chatData, CharacterData $characterData): ChatData;
+
+    /**
+     * @return Collection<ChatData>
+     */
+    public function getAllRssChats(): Collection;
 }

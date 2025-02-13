@@ -13,6 +13,8 @@ use App\Telegram\Abstract\Keyboards\TelegramKeyboardInterface;
 
 interface TelegramServiceInterface
 {
+    const MAX_MESSAGE_LENGTH = 4096;
+
     public function sendMessage(string $content, ?ChatData $chatData = null): ChatMessageData;
 
     /**
@@ -31,7 +33,7 @@ interface TelegramServiceInterface
 
     public function sendMessageWithKeyboard(TelegramKeyboardInterface $telegramKeyboard, ?string $content = null, ?ChatData $chatData = null): ChatMessageData;
 
-    public function updateKeyboard(TelegramKeyboard $telegramKeyboard, ?ChatMessageData $chatMessageData = null): void;
+    public function updateKeyboard(TelegramKeyboard $telegramKeyboard, ?ChatMessageData $chatMessageData = null, ?ChatData $chatData = null): void;
 
     public function deleteMessage(?ChatMessageData $chatMessageData = null, ?ChatData $chatData = null): void;
 }
