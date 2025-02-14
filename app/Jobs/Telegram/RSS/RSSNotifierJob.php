@@ -63,7 +63,7 @@ class RSSNotifierJob implements ShouldQueue
 
         Cache::set(self::CACHE_KEY, $latestNews->toJson());
 
-        $answer = $chatService->dryAnswer(sprintf("%s\n\n%s", __('openai.chat.prompts.rss'), $latestNews->fullText()), CharacterEnum::KIMI);
+        $answer = $chatService->dryAnswer(sprintf("%s\n%s\n\n%s", __('openai.chat.prompts.html'), __('openai.chat.prompts.rss'), $latestNews->fullText()), CharacterEnum::KIMI);
 
         foreach ($chatListForRss->chunk(config('telegram.limitations.messages.throttle')) as $chatChunk) {
             foreach ($chatChunk as $chat) {

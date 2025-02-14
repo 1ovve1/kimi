@@ -7,8 +7,7 @@ return [
         'prompts' => [
             'greetings' => 'Напиши приветствие',
             'interactive' => 'Твоя задача поддержать общение в чате, данные из которого передаются тебе в формате: "[{дата} {время}] #{индекс_сообщения} from \'{полное_имя}\': {текст_сообщения}" или "[{дата} {время}] #{индекс_сообщения} \'{полное_имя}\' reply to #{индекс_сообщения_для_ответа}: {текст_сообщения}". Старайся анализировать этот формат, отслеживать индексы сообщений и их дату отправки, чтобы примерно понимать текущий контекст.',
-            'html' => 'Свои ответы укрась через html (для telegram).',
-            'markdown' => 'You can generate your response with HTML format (if it helps the text look better). The following tags are currently supported:
+            'html' => 'You can generate your response with HTML format (if it helps the text look better). The following tags are currently supported:
 
 <b>bold</b>, <strong>bold</strong>
 <i>italic</i>, <em>italic</em>
