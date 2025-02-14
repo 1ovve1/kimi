@@ -33,11 +33,6 @@ readonly class CharacterBuilder implements CharacterBuilderInterface
         return new self($this->modelsEnum, $this->characterData, $this->buffer.__('openai.chat.prompts.interactive')."\n");
     }
 
-    public function withMarkdownResponse(): CharacterBuilderInterface
-    {
-        return new self($this->modelsEnum, $this->characterData, $this->buffer.__('openai.chat.prompts.markdown')."\n");
-    }
-
     public function withHtmlResponse(): CharacterBuilderInterface
     {
         return new self($this->modelsEnum, $this->characterData, $this->buffer.__('openai.chat.prompts.html')."\n");

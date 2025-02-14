@@ -59,7 +59,7 @@ class ChatService extends AbstractService implements ChatServiceInterface
         }
 
         $payload = $characterBuilder
-            ->withMarkdownResponse()
+            ->withHtmlResponse()
             ->createRequestBody(DialogMessageData::fromChatMessage($chatMessageData));
 
         if (config('app.debug')) {
@@ -84,7 +84,7 @@ class ChatService extends AbstractService implements ChatServiceInterface
         $memories = $this->memoryService->collectMemories($chatData);
         $payload = $characterBuilder
             ->withInteractiveMode()
-            ->withMarkdownResponse()
+            ->withHtmlResponse()
             ->createRequestBody(...$memories);
 
         if (config('app.debug')) {
