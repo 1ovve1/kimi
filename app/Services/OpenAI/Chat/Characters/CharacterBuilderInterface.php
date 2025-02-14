@@ -10,8 +10,6 @@ interface CharacterBuilderInterface
 {
     public function withInteractiveMode(): self;
 
-    public function withMarkdownResponse(): self;
-
     public function withHtmlResponse(): self;
 
     public function withGodMode(): self;
