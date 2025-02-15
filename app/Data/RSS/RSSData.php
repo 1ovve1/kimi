@@ -2,6 +2,7 @@
 
 namespace App\Data\RSS;
 
+use DateTimeInterface;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Data;
 

@@ -2,4 +2,4 @@
 
 use App\Jobs\Telegram\RSS\RSSNotifierJob;
 
-Schedule::job(RSSNotifierJob::class)->everyMinute();
+Schedule::job(RSSNotifierJob::class)->everyFiveMinutes();

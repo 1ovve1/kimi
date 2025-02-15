@@ -7,6 +7,7 @@ namespace App\Services\RSS;
 use App\Data\RSS\RSSData;
 use App\Data\RSS\RSSItemData;
 use App\Services\Abstract\AbstractService;
+use Illuminate\Support\Carbon;
 use Lowel\Rss\Factory as RSSFactory;
 
 class RSSService extends AbstractService implements RSSServiceInterface
@@ -16,10 +17,13 @@ class RSSService extends AbstractService implements RSSServiceInterface
         $client = (new RSSFactory)->fromUrl(config('rss.url'));
 
         $items = [];
+
+
         foreach ($client->getAttribute('item') as $item) {
             $items[] = new RSSItemData(
                 $item->getAttribute('title')->toString(),
                 $item->getAttribute('description')->toString(),
+                $item->getAttribute('pubDate')->toString(),
             );
         }
 

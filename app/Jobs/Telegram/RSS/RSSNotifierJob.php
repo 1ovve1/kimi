@@ -52,22 +52,30 @@ class RSSNotifierJob implements ShouldQueue
             return;
         }
 
-        $oldLatestNews = Cache::get(self::CACHE_KEY, '');
+        $oldLatestNewsPubDate = Cache::get(self::CACHE_KEY, '');
         $feed = $rssService->getRSSFeed();
         /** @var RSSItemData $latestNews */
         $latestNews = $feed->items[0];
 
-        if (is_string($oldLatestNews) && $oldLatestNews === $latestNews->toJson()) {
+        if (is_string($oldLatestNewsPubDate) && $oldLatestNewsPubDate == $latestNews->pubDate) {
             return;
         }
 
-        Cache::set(self::CACHE_KEY, $latestNews->toJson());
+        Cache::set(self::CACHE_KEY, $latestNews->pubDate);
 
-        $answer = $chatService->dryAnswer(sprintf("%s\n%s\n\n%s", __('openai.chat.prompts.html'), __('openai.chat.prompts.rss'), $latestNews->fullText()), CharacterEnum::KIMI);
+        $answer = $chatService->dryAnswer(sprintf("%s\n%s\n\n%s", __('openai.chat.prompts.html'), __('openai.chat.prompts.rss'), strip_tags($latestNews->fullText(), '<a>')), CharacterEnum::KIMI);
+
+        if (str_starts_with('Извини', $answer->content)) {
+            $answer = $chatService->dryAnswer(sprintf("%s\n%s\n\n%s", __('openai.chat.prompts.html'), __('openai.chat.prompts.rss'), strip_tags($latestNews->fullText(), '<a>')), CharacterEnum::KIMI);
+        }
+
+        if (str_starts_with('Извини', $answer->content)) {
+            return;
+        }
 
         foreach ($chatListForRss->chunk(config('telegram.limitations.messages.throttle')) as $chatChunk) {
             foreach ($chatChunk as $chat) {
-                $telegramService->sendMessageAndSave($answer->content, $chat);
+                $telegramService->sendMessageAndSave("{$answer->content}\n\n@kimi_news", $chat);
             }
 
             sleep(1);
